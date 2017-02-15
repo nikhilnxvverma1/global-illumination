@@ -1,0 +1,35 @@
+{
+  "name": "global-illumination",
+  "version": "0.0.1",
+  "description": "Project for all global illumination assignments",
+  "main": "index.js",
+  "scripts": {
+	"start":"gulp start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikhilnxvverma1/global-illumination.git"
+  },
+  "keywords": [
+    "Graphics",
+    "webgl",
+    "opengl",
+    "Global",
+    "illumination",
+    "canvas"
+  ],
+  "author": "Nikhil Verma",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/nikhilnxvverma1/global-illumination/issues"
+  },
+  "homepage": "https://github.com/nikhilnxvverma1/global-illumination#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.5.2",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-typescript": "^3.1.4",
+    "typescript": "^2.1.6"
+  }
+}
