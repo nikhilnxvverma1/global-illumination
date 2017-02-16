@@ -8,14 +8,19 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch Program",
-			"program": "${file}",
-			"cwd": "${workspaceRoot}"
+			"cwd": "${workspaceRoot}",
+			"program": "${workspaceRoot}/server/index.ts",
+			"preLaunchTask": "compile:server",
+			"sourceMaps": true,
+			"outFiles": []
 		},
 		{
 			"type": "node",
 			"request": "attach",
 			"name": "Attach to Process",
-			"port": 5858
+			"address": "localhost",
+			"port": 5858,
+			"outFiles": []
 		}
 	]
 }

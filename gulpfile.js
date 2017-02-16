@@ -7,38 +7,48 @@ var sourcemaps=require('gulp-sourcemaps');
 
 var paths = {
   typescript:{
-		src: ['./core/**/*.ts'],
-		config:'./core/tsconfig.json',
-		rootTypescriptDir:'./core',
-		outputJavascriptDir:'./core',
-		relativeSourcemaps:'./sourcemaps'//not used, sourcemaps are embedded
+	  server:{
+			src: ['./server/**/*.ts'],
+			config:'./server/tsconfig.json',
+			rootTypescriptDir:'./server',
+			outputJavascriptDir:'./server',
+			relativeSourcemaps:'./sourcemaps'//not used, sourcemaps are embedded
+	  }
   }
 };
 
-gulp.task('watch',function(){		
-  	gulp.watch(paths.typescript.src,['compile']);
+//watches server typescript files and compiles on change
+gulp.task('watch:server',function(){		
+  	gulp.watch(paths.typescript.server.src,['compile:server']);
 });
 
-//compiles typescript files 
-gulp.task('compile',function(){
+//compiles typescript files and stores them in a 'transpiled' folder
+gulp.task('compile:server',function(){
 
-	var tsProject = ts.createProject(path.resolve(paths.typescript.config));
-	return gulp.src(paths.typescript.src)
-		.pipe(sourcemaps.init())
-		.pipe(tsProject())
-		.pipe(sourcemaps.write({sourceRoot:"."}))
-		.pipe(gulp.dest(paths.typescript.outputJavascriptDir));
+	var tsProject = ts.createProject(path.resolve(paths.typescript.server.config));
+    return gulp.src(paths.typescript.server.src)
+        .pipe(sourcemaps.init())
+        .pipe(tsProject())
+        .pipe(sourcemaps.write({sourceRoot:"."}))
+        .pipe(gulp.dest(paths.typescript.server.outputJavascriptDir));
 });
 
 //clean up javascript files that may have resulted from typescript files in the same directory
-gulp.task('clean',shell.task('rm core/*.js'));
+gulp.task('clean:server',shell.task('rm server/*.js'));
 
-gulp.task('execute',shell.task('node core/main.js'));
-gulp.task('debug',shell.task('node --debug-brk=5858 core/index.js'));
+//server: transpiles typescript, watches ts files and launches the server
+gulp.task('execute:server',shell.task('node server/index.js'));
+gulp.task('debug:server',shell.task('node --debug-brk=5858 server/index.js'));
 
 // process.env.NODE_ENV=='production' ?
-// 		shell.task('node core/index.js'):
-// 		shell.task('node --debug-brk=5858 core/index.js')
-gulp.task('start',['compile','watch','execute']);
+// 		shell.task('node server/index.js'):
+// 		shell.task('node --debug-brk=5858 server/index.js')
+gulp.task('start:server',['compile:server','watch:server','execute:server']);
 
-gulp.task('default',['start']);
+gulp.task('info',function(){	
+	console.log("If this is the very first run, expect a delay in the page load (because .ts files haven't transpiled yet)");
+});
+
+gulp.task('watch:client',shell.task('ng build -o dist -w'));
+
+gulp.task('default',['start:server']);
