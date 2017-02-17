@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
+import { RayTracerDemoComponent } from './ray-tracer-demo/ray-tracer-demo.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RayTracerDemoComponent
   ],
   imports: [
     BrowserModule,
