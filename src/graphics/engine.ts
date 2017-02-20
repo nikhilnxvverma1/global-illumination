@@ -79,8 +79,8 @@ export class Engine{
 		let program=this.createProgram([vertexShaderId,fragmentShaderId]);
 
 		//create and bind a new buffer, and use the models to set positional attributes to it.
-		let positionBuffer=this.GL.createBuffer();
-		this.GL.bindBuffer(this.GL.ARRAY_BUFFER,positionBuffer);
+		let vertexBuffer=this.GL.createBuffer();
+		this.GL.bindBuffer(this.GL.ARRAY_BUFFER,vertexBuffer);
 
 		//to send data to the position attribute, we must first bind to that attribute's location
 		// this.GL.bindBuffer(this.GL.ARRAY_BUFFER,positionBuffer);
@@ -123,5 +123,40 @@ export class Engine{
 		//draw the triangles as set by the position buffers
 		this.GL.drawArrays(this.GL.TRIANGLES,0,3);
 
+		this.GL.deleteBuffer(vertexBuffer);
+
+
+		//------again--------
+		//create and bind a new buffer, and use the models to set positional attributes to it.
+		vertexBuffer=this.GL.createBuffer();
+		this.GL.bindBuffer(this.GL.ARRAY_BUFFER,vertexBuffer);
+		let points2=[
+			-1,0,0,0.5,0.1,0.9,
+			1,0,0,0.2,0.8,0.7,
+			0,-1,0,0.4,0.5,0.3
+		];
+		this.GL.bufferData(this.GL.ARRAY_BUFFER,new Float32Array(points2),this.GL.STATIC_DRAW);
+
+		//get the location to the position attribute defined in the vertex shader
+		positionLocation=this.GL.getAttribLocation(program,"position");
+
+		//enable array for position attribute of vertex shader
+		this.GL.enableVertexAttribArray(positionLocation);
+
+		//for each vertex, identify the position in the vertex buffer so that the vertex shader could use it.
+		
+		this.GL.vertexAttribPointer(positionLocation, 3, this.GL.FLOAT, false, 6 * STEP, 0);
+		// this.GL.disableVertexAttribArray(positionLocation);
+
+		//enable array for color attribute of fragment shader
+		colorLocation = this.GL.getAttribLocation(program, "color");
+		this.GL.enableVertexAttribArray(colorLocation);
+		this.GL.vertexAttribPointer(colorLocation, 3, this.GL.FLOAT, false, 6 * STEP, 3 * STEP);
+		// this.GL.disableVertexAttribArray(colorLocation);
+
+		//draw the triangles as set by the position buffers
+		this.GL.drawArrays(this.GL.TRIANGLES,0,3);
+
+		this.GL.deleteBuffer(vertexBuffer);
 	}
 }
