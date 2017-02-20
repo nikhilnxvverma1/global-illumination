@@ -1,5 +1,5 @@
 import { Geometry } from './geometry';
 
-export class Sphere{
-	radius:number;
+export class Sphere extends Geometry {
+	radius: number
 }

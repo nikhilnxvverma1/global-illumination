@@ -13,6 +13,7 @@ export class RayTracerDriver{
 
 	computePixelGrid(geometryList:Geometry[],camera:Camera):PixelGrid{
 		let pixelGrid=new PixelGrid(this.width,this.height,new Color().set("#5898f8"));
-		return null;
+		let imagePlane=camera.getNearPlane();
+		return pixelGrid;
 	}
 }
