@@ -1,10 +1,33 @@
 import { Point } from './point';
 import { Vector } from './vector';
+import { RectQuad } from './rect-quad';
 
 export class Camera{
-	origin:Point;
-	up:Vector;
-	lookAt:Vector;
 	perspective:boolean=true;
+	
+	origin:Point;
+	lookAt:Vector;
+	up:Vector;
 
+	top:number;
+	left:number;
+	bottom:number;
+	right:number;
+	near:number;
+	far:number;
+
+	constructor(
+		origin=new Point(0,0,0),
+		lookAt=new Vector(0,0,-1),
+		up=new Vector(0,1,0)
+	){
+		this.origin=origin;
+		this.lookAt=lookAt;
+		this.up=up;
+	}
+
+	getNearPlane():RectQuad{
+
+		return null;//TODO
+	}
 }
