@@ -8,6 +8,7 @@ export class PixelGrid{
 	}
 
 	private initGrid(width:number,height:number,defaultColor:Color){
+		this.grid=[];
 		for(let i=0;i<width;i++){
 			this.grid[i]=[];
 			for(let j=0;j<height;j++){

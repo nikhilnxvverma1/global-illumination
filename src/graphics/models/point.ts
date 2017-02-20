@@ -36,4 +36,8 @@ export class Point{
 	onShallow(d:number):Point{
 		return new Point(this.x,this.y,this.z-d);
 	}
+
+	add(dPoint: Point): Point {
+		return new Point(this.x + dPoint.x, this.y + dPoint.y;
+	}
 }
