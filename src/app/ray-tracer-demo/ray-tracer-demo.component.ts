@@ -36,12 +36,17 @@ export class RayTracerDemoComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
-		let sphere=new Sphere(10);
-		sphere.position=new Point(0,0,-30);
-		sphere.color=new Color().set("#542312");
+		let sphere1=new Sphere(10);
+		sphere1.position=new Point(5,0,-30);
+		sphere1.color=new Color().set("#542312");
+
+		let sphere2=new Sphere(10);
+		sphere2.position=new Point(-5,-5,-35);
+		sphere2.color=new Color().set("#245214");
 
 		let geometryList:Geometry[]=[];
-		geometryList.push(sphere);
+		geometryList.push(sphere1);
+		geometryList.push(sphere2);
 
 		pixelGridRenderer.pixelGrid=new RayTracerDriver(500,500).computePixelGrid(geometryList,camera);
 

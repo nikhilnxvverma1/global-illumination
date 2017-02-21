@@ -19,7 +19,7 @@ export class RectQuad extends Geometry {
 		let yStep = this.height / rowLength;
 
 		//simple case: flat plane parallel to xy plane
-		let topLeft = this.position.onLeft(-this.width / 2).onTop(this.height / 2);
+		let topLeft = this.position.onLeft(this.width / 2).onTop(this.height / 2);
 		return topLeft.add(new Point(column * xStep + xStep/2, row * yStep + yStep/2));
 	}
 }

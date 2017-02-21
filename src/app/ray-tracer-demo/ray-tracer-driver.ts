@@ -22,6 +22,10 @@ export class RayTracerDriver {
 		for (let i = 0; i < this.width; i++) {
 			for (let j = 0; j < this.height; j++) {
 
+				if(i==250 && j==250){
+					console.log("reached middle");
+				}
+
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
 				// console.log("i="+i+"j="+j+": "+pixel.toString());
@@ -45,7 +49,7 @@ export class RayTracerDriver {
 
 				//update color of the pixel grid at this pixel
 				if (best != null) {
-					pixelGrid[i][j] = best.geometry.color;
+					pixelGrid.grid[j][i] = best.geometry.color;
 				}
 			}
 		}
@@ -62,7 +66,7 @@ class IntersectionResult {
 		this.geometry=geometry;
 		this.primary=intersection;
 		this.camera=camera;
-		console.log("INtersected");
+		// console.log("Intersected");
 	}
 
 	updateIfNeeded(geometry:Geometry,intersection:Point):boolean{

@@ -16,7 +16,7 @@ export class Sphere extends Geometry {
 		let o = ray.origin;
 		let p = this.position;
 		let b = 2 * (d.x * (o.x - p.x) + d.y * (o.y - p.y) + d.z * (o.z - p.z));
-		let c = (o.x - p.x) * (o.x - p.x) + (o.y - p.y) * (o.y - p.y) + (o.z - p.z) * (o.z - p.z) + this.radius * this.radius
+		let c = (o.x - p.x) * (o.x - p.x) + (o.y - p.y) * (o.y - p.y) + (o.z - p.z) * (o.z - p.z) - this.radius * this.radius;
 		let b24c=b*b-4*c;
 		if(b24c<0){
 			return null;
