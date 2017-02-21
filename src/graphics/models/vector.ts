@@ -40,4 +40,8 @@ export class Vector{
 	opposite():Vector{
 		return new Vector(-this.x,-this.y,-this.z);
 	}
+
+	static between(from:Point,to:Point):Vector{
+		return new Vector(to.x-from.x,to.y-from.y,to.z-from.z);
+	}
 }
