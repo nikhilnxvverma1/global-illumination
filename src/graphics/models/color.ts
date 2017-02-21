@@ -31,4 +31,15 @@ export class Color{
 		this.b=parseInt(hexString.substr(4,2),16);
 		return this;
 	}
+
+	private getHexPart(v : number) : string {
+		let h:string = v.toString(16);
+		return (h.length > 1) ? h : "0"+h;
+	}
+
+	hashcode() : string {
+		return "#"+this.getHexPart(this.r)+this.getHexPart(this.g)+this.getHexPart(this.b);
+	}
+
+
 }

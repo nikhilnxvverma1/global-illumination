@@ -1,3 +1,5 @@
+import { Renderer } from './renderer';
+
 //Vertex Shader
 let simpleVertexShader=`
 	attribute vec4 position;
@@ -27,7 +29,7 @@ let colorFragmentShader=`
 `;
 
 
-export class Engine{
+export class Engine implements Renderer{
 	
 	constructor(
 		private GL:WebGLRenderingContext

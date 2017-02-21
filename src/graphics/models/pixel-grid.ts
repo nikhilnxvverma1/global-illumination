@@ -2,8 +2,12 @@ import { Color } from './color';
 
 export class PixelGrid{
 	grid:Color[][];
+	columns:number;
+	rows:number;
 
 	constructor(width:number,height:number,defaultColor:Color){
+		this.rows=height;
+		this.columns=width;
 		this.initGrid(width,height,defaultColor);
 	}
 
