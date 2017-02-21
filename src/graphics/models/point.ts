@@ -38,6 +38,10 @@ export class Point{
 	}
 
 	add(dPoint: Point): Point {
-		return new Point(this.x + dPoint.x, this.y + dPoint.y;
+		return new Point(this.x + dPoint.x, this.y + dPoint.y, this.z + dPoint.z);
+	}
+
+	toString():string{
+		return "("+this.x+","+this.y+","+this.z+")";
 	}
 }

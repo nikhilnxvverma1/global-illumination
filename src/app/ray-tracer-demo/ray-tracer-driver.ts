@@ -23,6 +23,7 @@ export class RayTracerDriver {
 
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
+				// console.log("i="+i+"j="+j+": "+pixel.toString());
 				let ray = Vector.between(camera.origin, pixel);
 
 				//compute the intersections with the geometries and store the best intersection 
