@@ -44,4 +44,11 @@ export class Point{
 	toString():string{
 		return "("+this.x+","+this.y+","+this.z+")";
 	}
+
+	distance(from:Point):number{
+		return Math.sqrt(
+			(this.x-from.x)*(this.x-from.x) +
+			(this.y-from.y)*(this.y-from.y) +
+			(this.z-from.z)*(this.z-from.z));
+	}
 }

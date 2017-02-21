@@ -1,13 +1,14 @@
 import { Geometry } from './geometry';
 import { Point } from './point';
 import { Vector } from './vector';
+import { Ray } from './ray';
 
 /** A quad with 0 thickness, rectangular in shape of some dimensions*/
 export class RectQuad extends Geometry {
 	width: number;
 	height: number;
 
-	intersection(ray:Vector):Point[]{
+	intersection(ray:Ray):Point{
 		return null;//TODO
 	}
 

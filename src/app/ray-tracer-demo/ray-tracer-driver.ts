@@ -5,6 +5,7 @@ import { PixelGrid } from '../../graphics/models/pixel-grid';
 import { RectQuad } from '../../graphics/models/rect-quad';
 import { Point } from '../../graphics/models/point';
 import { Vector } from '../../graphics/models/vector';
+import { Ray } from '../../graphics/models/ray';
 
 export class RayTracerDriver {
 
@@ -24,20 +25,20 @@ export class RayTracerDriver {
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
 				// console.log("i="+i+"j="+j+": "+pixel.toString());
-				let ray = Vector.between(camera.origin, pixel);
+				let ray = new Ray(camera.origin, Vector.between(camera.origin,pixel));
 
 				//compute the intersections with the geometries and store the best intersection 
 				let best: IntersectionResult = null;
 				for (let geometry of geometryList) {
 
 					//find intersections with ray
-					let intersections = geometry.intersection(ray);
-					if (intersections != null && intersections.length > 0) {
+					let intersection = geometry.intersection(ray);
+					if (intersection != null) {
 					//compare against best intersection and update if closes to camera
 						if(best!=null){
-							best.updateIfNeeded(geometry,intersections,camera)
+							best.updateIfNeeded(geometry,intersection)
 						}else{
-							best=new IntersectionResult(geometry,intersections,camera);
+							best=new IntersectionResult(geometry,intersection,camera);
 						}
 					}
 				}
@@ -55,16 +56,22 @@ export class RayTracerDriver {
 class IntersectionResult {
 	geometry: Geometry;
 	primary: Point;
-	secondary: Point;
+	camera:Camera;
 
-	constructor(geometry:Geometry,intersections:Point[],camera:Camera){
+	constructor(geometry:Geometry,intersection:Point,camera:Camera){
 		this.geometry=geometry;
-		this.primary=intersections[0];
-		//TODO
+		this.primary=intersection;
+		this.camera=camera;
+		console.log("INtersected");
 	}
 
-	updateIfNeeded(geometry:Geometry,intersections:Point[],camera:Camera):boolean{
-		//TODO
+	updateIfNeeded(geometry:Geometry,intersection:Point):boolean{
+		let distanceFromCamera=this.camera.origin.distance(intersection);
+		if(distanceFromCamera<this.camera.origin.distance(this.primary)){
+			this.geometry=geometry;
+			this.primary=intersection;
+			return true;
+		}
 		return false;
 	}
 }
