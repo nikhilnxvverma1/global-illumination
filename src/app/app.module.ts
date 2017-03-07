@@ -5,11 +5,13 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { RayTracerDemoComponent } from './ray-tracer-demo/ray-tracer-demo.component';
+import { BasicShadingComponent } from './basic-shading/basic-shading.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RayTracerDemoComponent
+    RayTracerDemoComponent,
+    BasicShadingComponent
   ],
   imports: [
     BrowserModule,
