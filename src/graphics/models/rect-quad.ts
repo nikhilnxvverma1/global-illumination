@@ -39,4 +39,13 @@ export class RectQuad extends Geometry {
 		let topLeft = this.position.onLeft(this.width / 2).onTop(this.height / 2);
 		return topLeft.add(new Point(column * xStep + xStep / 2, row * yStep + yStep / 2));
 	}
+
+	normalExtrudingTo(point:Point):Vector{
+		let projection:Point=new Point(point.x,this.position.y,point.z);//TODO what if the plane is rotated
+		if(point.y>this.position.y){
+			return Vector.between(projection,point);
+		}else{
+			return Vector.between(point,projection);
+		}
+	}
 }

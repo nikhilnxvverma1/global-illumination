@@ -3,5 +3,10 @@ import { Color } from './color';
 
 export class Light{
 	position:Point;
-	color:Color;
+	color:Color=new Color(255,255,255,255);
+
+	constructor(position:Point){
+		this.position=position;
+	}
+
 }

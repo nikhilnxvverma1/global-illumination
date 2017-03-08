@@ -39,4 +39,8 @@ export class Sphere extends Geometry {
 			}
 		}
 	}
+
+	normalExtrudingTo(point:Point):Vector{
+		return Vector.between(this.position,point);
+	}
 }

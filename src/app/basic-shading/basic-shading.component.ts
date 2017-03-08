@@ -11,6 +11,8 @@ import { Vector } from '../../graphics/models/vector';
 import { Geometry } from '../../graphics/models/geometry';
 import { RectQuad } from '../../graphics/models/rect-quad';
 import { BasicShadingDriver } from './basic-shading-driver';
+import { World } from '../../graphics/models/world';
+import { Light } from '../../graphics/models/light';
 
 
 @Component({
@@ -59,7 +61,14 @@ export class BasicShadingComponent implements OnInit {
 		geometryList.push(sphere2);
 		geometryList.push(plane);
 
-		pixelGridRenderer.pixelGrid=new BasicShadingDriver(500,500).computePixelGrid(geometryList,camera);
+		let light1=new Light(new Point(5,-10,-5));
+
+		let world=new World();
+		world.geometryList=geometryList;
+		world.camera=camera;
+		world.lightList.push(light1);
+
+		pixelGridRenderer.pixelGrid=new BasicShadingDriver(500,500).computePixelGrid(world);
 
 		this.renderer=pixelGridRenderer;
 		this.renderer.draw();

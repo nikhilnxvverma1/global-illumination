@@ -6,6 +6,11 @@ import { RectQuad } from '../../graphics/models/rect-quad';
 import { Point } from '../../graphics/models/point';
 import { Vector } from '../../graphics/models/vector';
 import { Ray } from '../../graphics/models/ray';
+import { World } from '../../graphics/models/world';
+import { IlluminationModel } from '../../graphics/models/illumination-model';
+import { PhongIlluminationModel } from '../../graphics/models/phong-illumination';
+import { Light } from '../../graphics/models/light';
+import { IntersectionData } from '../../graphics/models/intersection-data';
 
 export class BasicShadingDriver {
 
@@ -14,17 +19,17 @@ export class BasicShadingDriver {
 		private height: number
 	) { }
 
-	computePixelGrid(geometryList: Geometry[], camera: Camera): PixelGrid {
+	computePixelGrid(world:World): PixelGrid {
+
+		let geometryList=world.geometryList;
+		let camera=world.camera;
+
 		let pixelGrid = new PixelGrid(this.width, this.height, new Color().set("#5898f8"));
 		let imagePlane = camera.getNearPlane();
 
 		//iterate over the image plane grid to get the position of each pixel
 		for (let i = 0; i < this.width; i++) {
 			for (let j = 0; j < this.height; j++) {
-
-				if(i==250 && j==250){
-					console.log("reached middle");
-				}
 
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
@@ -49,7 +54,11 @@ export class BasicShadingDriver {
 
 				//update color of the pixel grid at this pixel
 				if (best != null) {
-					pixelGrid.grid[j][i] = best.geometry.color;
+
+					let intersectionData=new IntersectionData(world.lightList).computeUsing(best.geometry,best.primary);
+
+					// pixelGrid.grid[j][i] = best.geometry.color;
+					pixelGrid.grid[j][i] = best.geometry.illuminationModel.illuminate(world,intersectionData);
 				}
 			}
 		}
