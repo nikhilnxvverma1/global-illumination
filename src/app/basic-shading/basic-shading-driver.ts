@@ -55,10 +55,8 @@ export class BasicShadingDriver {
 				//update color of the pixel grid at this pixel
 				if (best != null) {
 
-					let intersectionData=new IntersectionData(world.lightList).computeUsing(best.geometry,best.primary);
-
 					// pixelGrid.grid[j][i] = best.geometry.color;
-					pixelGrid.grid[j][i] = best.geometry.illuminationModel.illuminate(world,intersectionData);
+					pixelGrid.grid[j][i] = best.geometry.illuminationModel.illuminate(best.primary,best.geometry,world);
 				}
 			}
 		}

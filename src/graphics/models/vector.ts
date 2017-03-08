@@ -1,4 +1,5 @@
 import { Point } from './point';
+import { Ray } from './ray';
 
 export class Vector{
 	x:number;
@@ -29,6 +30,14 @@ export class Vector{
 		return unitVector;
 	}
 
+	normalize():Vector{
+		let magnitude=this.magnitude();
+		this.x=this.x/magnitude;
+		this.y=this.y/magnitude;
+		this.z=this.z/magnitude;
+		return this;
+	}
+
 	magnitude():number{
 		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
 	}
@@ -41,7 +50,15 @@ export class Vector{
 		return new Vector(-this.x,-this.y,-this.z);
 	}
 
+	dot(that:Vector):number{
+		return this.x * that.x + this.y * that.y + this.z * that.z;
+	}
+
 	static between(from:Point,to:Point):Vector{
 		return new Vector(to.x-from.x,to.y-from.y,to.z-from.z);
+	}
+
+	static reflect(ray:Ray,normal:Vector):Vector{
+		return null;//TODO
 	}
 }
