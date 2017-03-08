@@ -42,31 +42,36 @@ export class BasicShadingComponent implements OnInit {
 		camera.bottom=-10;
 
 		let sphere1=new Sphere(10);
-		sphere1.position=new Point(5,0,-30);
+		sphere1.position=new Point(5,0,-35);
 		sphere1.color=new Color().set("#542312");
 
 		let sphere2=new Sphere(10);
-		sphere2.position=new Point(-5,-5,-35);
+		// sphere2.position=new Point(-5,-5,-65);
+		sphere2.position=new Point(-5,-5,-40);
 		sphere2.color=new Color().set("#245214");
 
 		let plane=new RectQuad();
 		plane.position=new Point(0,-8,-40);
 		plane.normal=new Vector(0,1,0);
 		plane.color=new Color().set("#141574");
-		plane.width=90;
-		plane.height=90;
+		plane.width=150;
+		plane.height=150;
 
 		let geometryList:Geometry[]=[];
 		geometryList.push(sphere1);
 		geometryList.push(sphere2);
 		geometryList.push(plane);
 
-		let light1=new Light(new Point(5,-10,-5));
 
 		let world=new World();
 		world.geometryList=geometryList;
 		world.camera=camera;
+
+		let light1=new Light(new Point(5,20,-5));
 		world.lightList.push(light1);
+
+		// let light2=new Light(new Point(-5,15,-5));
+		// world.lightList.push(light2);
 
 		pixelGridRenderer.pixelGrid=new BasicShadingDriver(500,500).computePixelGrid(world);
 

@@ -50,7 +50,16 @@ export class Color {
 		return clone;
 	}
 
-	multiply(that: Color): Color {
+	toWholeValues(): Color {
+		let clone = new Color();
+		clone.r = Math.ceil(this.r * 255);
+		clone.g = Math.ceil(this.g * 255);
+		clone.b = Math.ceil(this.b * 255);
+		clone.a = Math.ceil(this.a * 255);
+		return clone;
+	}
+
+	product(that: Color): Color {
 		let product = new Color();
 		product.r = this.r * that.r;
 		product.g = this.g * that.g;
@@ -69,8 +78,26 @@ export class Color {
 		return color;
 	}
 
-	add(that:Color):Color{
+	/**Returns the sum of this color with another color */
+	sum(that:Color):Color{
 		return new Color(this.r+that.r,this.g+that.g,this.b+that.b,this.a+that.a);
+	}
+
+	/**Adds element wise sum with another vector and MODIFIES original object */
+	addToSelf(that:Color):Color{
+		this.r+=that.r;
+		this.g+=that.g;
+		this.b+=that.b;
+		this.a+=that.a;
+		return this;
+	}
+
+	/**Changes itself and returns the same object*/
+	makeNegativeValuesPositive(): Color {
+		this.r = this.r < 0 ? -this.r : this.r;
+		this.g = this.g < 0 ? -this.g : this.g;
+		this.b = this.b < 0 ? -this.b : this.b;
+		return this;
 	}
 
 }

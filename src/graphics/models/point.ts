@@ -1,3 +1,6 @@
+import { Ray } from './ray';
+import { Vector } from './vector';
+
 export class Point{
 	x:number;
 	y:number;
@@ -50,5 +53,13 @@ export class Point{
 			(this.x-from.x)*(this.x-from.x) +
 			(this.y-from.y)*(this.y-from.y) +
 			(this.z-from.z)*(this.z-from.z));
+	}
+
+	reflect(vector:Vector,normal:Vector):Vector{
+		let numerator = vector.dot(normal);
+		let denominator = Math.pow(normal.magnitude(), 2);
+		let fraction = 2 * (numerator / denominator);
+
+		return vector.subtract(normal.scalerProduct(fraction));
 	}
 }

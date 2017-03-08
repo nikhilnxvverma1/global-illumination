@@ -54,11 +54,20 @@ export class Vector{
 		return this.x * that.x + this.y * that.y + this.z * that.z;
 	}
 
+	scalerProduct(scaler: number): Vector {
+		let vector = new Vector();
+		vector.x = scaler * this.x;
+		vector.y = scaler * this.y;
+		vector.z = scaler * this.z;
+		return vector;
+	}
+
+	subtract(that:Vector):Vector{
+		return new Vector(this.x-that.x,this.y-that.y,this.z-that.z);
+	}
+
 	static between(from:Point,to:Point):Vector{
 		return new Vector(to.x-from.x,to.y-from.y,to.z-from.z);
 	}
 
-	static reflect(ray:Ray,normal:Vector):Vector{
-		return null;//TODO
-	}
 }

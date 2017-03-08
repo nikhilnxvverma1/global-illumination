@@ -54,9 +54,12 @@ export class BasicShadingDriver {
 
 				//update color of the pixel grid at this pixel
 				if (best != null) {
+					let illuminatedColor= best.geometry.illuminationModel.illuminate(best.primary,best.geometry,world);
 
-					// pixelGrid.grid[j][i] = best.geometry.color;
-					pixelGrid.grid[j][i] = best.geometry.illuminationModel.illuminate(best.primary,best.geometry,world);
+					pixelGrid.grid[j][i] =illuminatedColor;
+					// if(i>233){
+					// 	pixelGrid.grid[j][i]=new Color(33,123,184,123);
+					// }
 				}
 			}
 		}

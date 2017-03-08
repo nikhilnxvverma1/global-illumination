@@ -21,10 +21,10 @@ export class IntersectionData{
 		this.light=light;
 		//compute the intersection data using the provided values
 		this.normal=geometry.normalExtrudingTo(point).normalize();
-		this.incoming=Vector.between(point,light.position).normalize();
+		this.incoming=Vector.between(point,light.position).normalize();//notice that this is inverted
 		
 		let towardsLight = new Ray(point, Vector.between(point, light.position))
-		this.reflective=Vector.reflect(towardsLight,this.normal);
+		this.reflective=point.reflect(this.incoming.opposite(),this.normal).normalize();//we inverte it again to get the right direction
 
 		this.view=Vector.between(point,camera.origin).normalize();
 	}

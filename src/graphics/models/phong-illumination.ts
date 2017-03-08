@@ -18,7 +18,7 @@ export class PhongIlluminationModel implements IlluminationModel{
 	/**Exponent controlling the size of specular highlight */
 	ke:number;
 
-	constructor(ka:number=0.6,kd:number=0.3,ks:number=0.4,ke:number=1){
+	constructor(ka:number=0.9,kd:number=0.3,ks:number=0.6,ke:number=2){
 		this.ka=ka;
 		this.kd=kd;
 		this.ks=ks;
@@ -29,9 +29,9 @@ export class PhongIlluminationModel implements IlluminationModel{
 		//object color
 		let co=geometry.color.toFractionalValues();
 
-		let ambientComponent = world.ambientLight.toFractionalValues().multiply(co).scalerProduct(this.ka);
-		let diffuseComponent: Color;
-		let specularComponent: Color;
+		let ambientComponent = world.ambientLight.toFractionalValues().product(co).scalerProduct(this.ka);
+		let diffuseComponent: Color = new Color(0, 0, 0, 0);
+		let specularComponent: Color = new Color(0, 0, 0, 0);
 
 		for (let i = 0; i < world.lightList.length; i++) {
 
@@ -44,34 +44,42 @@ export class PhongIlluminationModel implements IlluminationModel{
 			let towardsLight = new Ray(point, Vector.between(point, light.position));
 
 			//compute the intersections with the geometries and store the best intersection 
-			let best: BestIntersection = new BestIntersection(point);
-			for (let geometry of world.geometryList) {
+			let best: BestIntersection = new BestIntersection(point);//TODO unneeded, just need to ensure there is no intersection
+			for (let otherObjects of world.geometryList) {
+
+				if(otherObjects==geometry){
+					continue;
+				}
 
 				//find intersections with ray
-				let intersection = geometry.intersection(towardsLight);
+				let intersection = otherObjects.intersection(towardsLight);
 				if (intersection != null) {
+
+					// console.debug("Intersection before light");
 					//compare against best intersection and update if closes to camera
-					best.updateIfNeeded(geometry, intersection)
+					best.updateIfNeeded(otherObjects, intersection)
 				}
 			}
 
-			//add the diffuse and specular component
-			if (!best.isEmpty) {
+			//add the diffuse and specular component only if there was no intersection
+			if (best.isEmpty()) {
 				let n=intersectionData.normal;
 				let si=intersectionData.incoming;
 				let ri=intersectionData.reflective;
 				
-				let diffuseColor=li.multiply(co).scalerProduct(si.dot(n));
-				diffuseComponent.add(diffuseColor);
+				let diffuseColor=li.product(co).scalerProduct(si.dot(n));
+				diffuseComponent.addToSelf(diffuseColor);
 
-				let cs=light.color;
-				let specularColor=li.multiply(cs).scalerProduct(Math.pow(ri.dot(n),this.ke));
-				specularComponent.add(specularColor);
+				let cs=light.color.toFractionalValues();
+				let specularColor=li.product(cs).scalerProduct(Math.pow(ri.dot(n),this.ke));
+				specularComponent.addToSelf(specularColor);
 			}
 		}
 
 
 		// return intersectionData.geometry.color;
-		return ambientComponent.add(diffuseComponent.scalerProduct(this.kd)).add(specularComponent.scalerProduct(this.ks));
+		let fractionalColor = ambientComponent.sum(diffuseComponent.scalerProduct(this.kd)).sum(specularComponent.scalerProduct(this.ks));
+		let in256Range=fractionalColor.toWholeValues().makeNegativeValuesPositive();
+		return in256Range;
 	}
 }
