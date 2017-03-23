@@ -28,11 +28,8 @@ export class BasicShadingComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
-		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
-		// this.renderer=new Engine(canvas.getContext('webgl'));
 		
-		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
-		
+		//camera
 		let camera=new Camera();
 		camera.near=10;
 		camera.far=50;
@@ -41,15 +38,18 @@ export class BasicShadingComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
+		//upper blue sphere
 		let sphere1=new Sphere(10);
 		sphere1.position=new Point(5,0,-35);
 		sphere1.color=new Color().set("#542312");
 
+		//lower green sphere 
 		let sphere2=new Sphere(10);
 		// sphere2.position=new Point(-5,-5,-65);
 		sphere2.position=new Point(-5,-5,-40);
 		sphere2.color=new Color().set("#245214");
 
+		//bottom dark blue plane
 		let plane=new RectQuad();
 		plane.position=new Point(0,-8,-40);
 		plane.normal=new Vector(0,1,0);
@@ -57,24 +57,34 @@ export class BasicShadingComponent implements OnInit {
 		plane.width=150;
 		plane.height=150;
 
+		//put all these in a list
 		let geometryList:Geometry[]=[];
 		geometryList.push(sphere1);
 		geometryList.push(sphere2);
 		geometryList.push(plane);
 
-
+		//MAKE world and SUPPLY list and camera
 		let world=new World();
 		world.geometryList=geometryList;
 		world.camera=camera;
 
+		//MAKE a light and SUPPLY that as well
 		let light1=new Light(new Point(5,20,-5));
 		world.lightList.push(light1);
 
 		// let light2=new Light(new Point(-5,15,-5));
 		// world.lightList.push(light2);
 
+		//get canvas SO THAT we can create a pixel grid 
+		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
+		// this.renderer=new Engine(canvas.getContext('webgl'));
+		
+		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
+		
+		// USE driver TO GET pixel grid
 		pixelGridRenderer.pixelGrid=new BasicShadingDriver(500,500).computePixelGrid(world);
 
+		//draw
 		this.renderer=pixelGridRenderer;
 		this.renderer.draw();
 	}

@@ -25,11 +25,32 @@ export class RayTracerDemoComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
-		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
-		// this.renderer=new Engine(canvas.getContext('webgl'));
-		
-		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
-		
+	
+		//upper first sphere setup
+		let sphere1=new Sphere(10);
+		sphere1.position=new Point(5,0,-30);
+		sphere1.color=new Color().set("#542312");
+
+		//lower green sphere
+		let sphere2=new Sphere(10);
+		sphere2.position=new Point(-5,-5,-35);
+		sphere2.color=new Color().set("#245214");
+
+		//dark blue plane
+		let plane=new RectQuad();
+		plane.position=new Point(0,-8,-40);
+		plane.normal=new Vector(0,1,0);
+		plane.color=new Color().set("#141574");
+		plane.width=90;
+		plane.height=90;
+
+		//put geometries in a list to show
+		let geometryList:Geometry[]=[];
+		geometryList.push(sphere1);
+		geometryList.push(sphere2);
+		geometryList.push(plane);
+
+		//camera setup
 		let camera=new Camera();
 		camera.near=10;
 		camera.far=50;
@@ -38,26 +59,13 @@ export class RayTracerDemoComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
-		let sphere1=new Sphere(10);
-		sphere1.position=new Point(5,0,-30);
-		sphere1.color=new Color().set("#542312");
+		//get canvas to render on
+		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
+		// this.renderer=new Engine(canvas.getContext('webgl'));
+		
+		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
 
-		let sphere2=new Sphere(10);
-		sphere2.position=new Point(-5,-5,-35);
-		sphere2.color=new Color().set("#245214");
-
-		let plane=new RectQuad();
-		plane.position=new Point(0,-8,-40);
-		plane.normal=new Vector(0,1,0);
-		plane.color=new Color().set("#141574");
-		plane.width=90;
-		plane.height=90;
-
-		let geometryList:Geometry[]=[];
-		geometryList.push(sphere1);
-		geometryList.push(sphere2);
-		geometryList.push(plane);
-
+		//render using a pixel grid that will be computed by the RAY TRACER framework
 		pixelGridRenderer.pixelGrid=new RayTracerDriver(500,500).computePixelGrid(geometryList,camera);
 
 		this.renderer=pixelGridRenderer;
