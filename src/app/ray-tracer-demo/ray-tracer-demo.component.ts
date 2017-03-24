@@ -24,7 +24,7 @@ export class RayTracerDemoComponent implements OnInit {
 
 	constructor() { }
 
-	ngOnInit() {
+	ngOnInit() {	// 7 units
 	
 		//upper first sphere setup
 		let sphere1=new Sphere(10);
@@ -44,13 +44,13 @@ export class RayTracerDemoComponent implements OnInit {
 		plane.width=90;
 		plane.height=90;
 
-		//put geometries in a list to show
+		//PUT geometries in a list to show
 		let geometryList:Geometry[]=[];
 		geometryList.push(sphere1);
 		geometryList.push(sphere2);
 		geometryList.push(plane);
 
-		//camera setup
+		//camera 
 		let camera=new Camera();
 		camera.near=10;
 		camera.far=50;
@@ -59,13 +59,13 @@ export class RayTracerDemoComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
-		//get canvas to render on
+		//MAKE pixel grid using canvas
 		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
 		// this.renderer=new Engine(canvas.getContext('webgl'));
 		
 		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
 
-		//render using a pixel grid that will be computed by the RAY TRACER framework
+		//RENDER using a pixel grid that will be COMPUTED by the RAY TRACER framework
 		pixelGridRenderer.pixelGrid=new RayTracerDriver(500,500).computePixelGrid(geometryList,camera);
 
 		this.renderer=pixelGridRenderer;

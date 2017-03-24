@@ -19,7 +19,7 @@ export class BasicShadingDriver {
 		private height: number
 	) { }
 
-	computePixelGrid(world:World): PixelGrid {
+	computePixelGrid(world:World): PixelGrid {	//6 units
 
 		let geometryList=world.geometryList;
 		let camera=world.camera;
@@ -27,24 +27,25 @@ export class BasicShadingDriver {
 		let pixelGrid = new PixelGrid(this.width, this.height, new Color().set("#5898f8"));
 		let imagePlane = camera.getNearPlane();
 
-		//iterate over the image plane grid to get the position of each pixel
+		//FOR EACH pixel of image grid,
 		for (let i = 0; i < this.width; i++) {
 			for (let j = 0; j < this.height; j++) {
 
-				//make the ray from camera to pixel
+				//MAKE the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
 				// console.log("i="+i+"j="+j+": "+pixel.toString());
 				let ray = new Ray(camera.origin, Vector.between(camera.origin,pixel));
 
-				//compute the intersections with the geometries and store the best intersection 
+				//FIND the best intersection:
 				let best: IntersectionResult = null;
 				for (let geometry of geometryList) {
 
-					//find intersections with ray
+					//COMPUTE intersections with ray
 					let intersection = geometry.intersection(ray);
 					if (intersection != null) {
-					//compare against best intersection and update if closes to camera
+						
 						if(best!=null){
+							//UPDATE if closest to camera
 							best.updateIfNeeded(geometry,intersection)
 						}else{
 							best=new IntersectionResult(geometry,intersection,camera);
@@ -52,7 +53,7 @@ export class BasicShadingDriver {
 					}
 				}
 
-				//update color of the pixel grid at this pixel
+				//UPDATE color of the pixel grid at this pixel
 				if (best != null) {
 					let illuminatedColor= best.geometry.illuminationModel.illuminate(best.primary,best.geometry,world);
 

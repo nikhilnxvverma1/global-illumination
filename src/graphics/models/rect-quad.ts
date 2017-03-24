@@ -29,14 +29,17 @@ export class RectQuad extends Geometry {
 		return null;
 	}
 
-	pointInGrid(row: number, column: number, rowLength: number, columnLength: number): Point {
+	pointInGrid(row: number, column: number, rowLength: number, columnLength: number): Point { //3 units
 
-		//to get pixel positions, find the 'step' distance needed to fill up the image plane for the given dimensions 
+		//COMPUTE the 'step' distance needed to fill up the image plane for the given dimensions 
 		let xStep = this.width / columnLength;
 		let yStep = this.height / rowLength;
 
-		//simple case: flat plane parallel to xy plane
+		//(simple case: flat plane parallel to xy plane)
+		//COMPUTE top left position 
 		let topLeft = this.position.onLeft(this.width / 2).onTop(this.height / 2);
+
+		//ADD offsetted position 
 		return topLeft.add(new Point(column * xStep + xStep / 2, row * yStep + yStep / 2));
 	}
 

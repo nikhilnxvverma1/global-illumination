@@ -38,9 +38,9 @@ export class BasicShadingComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
-		//upper blue sphere
+		//upper brown sphere
 		let sphere1=new Sphere(10);
-		sphere1.position=new Point(5,0,-35);
+		sphere1.position=new Point(5,25,-35);
 		sphere1.color=new Color().set("#542312");
 
 		//lower green sphere 
