@@ -2,6 +2,7 @@ import { Geometry } from './geometry';
 import { Point } from './point';
 import { Vector } from './vector';
 import { Ray } from './ray';
+import { PointOnModel } from './point-on-model';
 
 /** A quad with 0 thickness, rectangular in shape of some dimensions*/
 export class RectQuad extends Geometry {
@@ -50,5 +51,32 @@ export class RectQuad extends Geometry {
 		}else{
 			return Vector.between(point,projection);
 		}
+	}
+
+	pointOnModelAfterIntersectionWith(ray:Ray):PointOnModel{
+		//compute intersection variables
+		let d = ray.direction;
+		let o = ray.origin;
+		let p = this.position;
+		let n = this.normal;
+		let f = p.distance(new Point());//distance from origin
+		let w = -(n.x * o.x + n.y * o.y + n.z * o.z + f) / (n.x * d.x + n.y * d.y + n.z * d.z);
+
+		let pointOnModel=new PointOnModel();
+		if(w>0){
+			let inside = ray.pointAt(w);
+			if (
+				(inside.x < p.x - this.width / 2 || inside.x > p.x + this.width / 2)||
+				(inside.z < p.z - this.height / 2 || inside.z > p.z + this.height / 2) ){
+
+				return null;
+			}else{
+				pointOnModel.intersection=inside;
+				//TODO uv point on quad
+				return pointOnModel;
+			}
+		}
+		
+		return null;
 	}
 }

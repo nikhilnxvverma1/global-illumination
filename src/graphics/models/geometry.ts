@@ -5,6 +5,7 @@ import { Ray } from './ray';
 import { IlluminationModel } from './illumination-model';
 import { PhongIlluminationModel } from './phong-illumination';
 import { World } from './world';
+import { PointOnModel } from './point-on-model';
 
 export abstract class Geometry{
 	position:Point;
@@ -15,5 +16,7 @@ export abstract class Geometry{
 	abstract intersection(ray:Ray):Point;
 
 	abstract normalExtrudingTo(point:Point):Vector;
+
+	abstract pointOnModelAfterIntersectionWith(ray:Ray):PointOnModel;
 
 }

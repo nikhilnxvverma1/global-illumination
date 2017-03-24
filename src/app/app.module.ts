@@ -6,12 +6,14 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { RayTracerDemoComponent } from './ray-tracer-demo/ray-tracer-demo.component';
 import { BasicShadingComponent } from './basic-shading/basic-shading.component';
+import { ProceduralTexturingComponent } from './procedural-texturing/procedural-texturing.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RayTracerDemoComponent,
-    BasicShadingComponent
+    BasicShadingComponent,
+    ProceduralTexturingComponent
   ],
   imports: [
     BrowserModule,
