@@ -60,11 +60,11 @@ export class RectQuad extends Geometry {
 		let p = this.position;
 		let n = this.normal;
 		let f = p.distance(new Point());//distance from origin
-		let w = -(n.x * o.x + n.y * o.y + n.z * o.z + f) / (n.x * d.x + n.y * d.y + n.z * d.z);
+		let forwardDistance = -(n.x * o.x + n.y * o.y + n.z * o.z + f) / (n.x * d.x + n.y * d.y + n.z * d.z);
 
 		let pointOnModel=new PointOnModel();
-		if(w>0){
-			let inside = ray.pointAt(w);
+		if(forwardDistance>0){
+			let inside = ray.pointAt(forwardDistance);
 			if (
 				(inside.x < p.x - this.width / 2 || inside.x > p.x + this.width / 2)||
 				(inside.z < p.z - this.height / 2 || inside.z > p.z + this.height / 2) ){

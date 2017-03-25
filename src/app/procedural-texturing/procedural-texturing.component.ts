@@ -11,6 +11,8 @@ import { Vector } from '../../graphics/models/vector';
 import { Geometry } from '../../graphics/models/geometry';
 import { RectQuad } from '../../graphics/models/rect-quad';
 import { ProceduralTextureDriver } from './procedural-texture-driver';
+import { World } from '../../graphics/models/world';
+import { Light } from '../../graphics/models/light';
 
 @Component({
   selector: 'app-procedural-texturing',
@@ -26,31 +28,8 @@ export class ProceduralTexturingComponent implements OnInit {
 
 	ngOnInit() {	// 7 units
 	
-		//upper first sphere setup
-		let sphere1=new Sphere(10);
-		sphere1.position=new Point(5,0,-30);
-		sphere1.color=new Color().set("#542312");
-
-		//lower green sphere
-		let sphere2=new Sphere(10);
-		sphere2.position=new Point(-5,-5,-35);
-		sphere2.color=new Color().set("#245214");
-
-		//dark blue plane
-		let plane=new RectQuad();
-		plane.position=new Point(0,-8,-40);
-		plane.normal=new Vector(0,1,0);
-		plane.color=new Color().set("#141574");
-		plane.width=90;
-		plane.height=90;
-
-		//PUT geometries in a list to show
-		let geometryList:Geometry[]=[];
-		geometryList.push(sphere1);
-		geometryList.push(sphere2);
-		geometryList.push(plane);
-
-		//camera 
+		
+		//camera
 		let camera=new Camera();
 		camera.near=10;
 		camera.far=50;
@@ -59,15 +38,53 @@ export class ProceduralTexturingComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
-		//MAKE pixel grid using canvas
+		//upper brown sphere
+		let sphere1=new Sphere(10);
+		sphere1.position=new Point(5,10,-35);
+		sphere1.color=new Color().set("#542312");
+
+		//lower green sphere 
+		let sphere2=new Sphere(10);
+		// sphere2.position=new Point(-5,-5,-65);
+		sphere2.position=new Point(-5,-5,-40);
+		sphere2.color=new Color().set("#245214");
+
+		//bottom dark blue plane
+		let plane=new RectQuad();
+		plane.position=new Point(0,-8,-40);
+		plane.normal=new Vector(0,1,0);
+		plane.color=new Color().set("#141574");
+		plane.width=150;
+		plane.height=150;
+
+		//put all these in a list
+		let geometryList:Geometry[]=[];
+		geometryList.push(sphere1);
+		geometryList.push(sphere2);
+		geometryList.push(plane);
+
+		//MAKE world and SUPPLY list and camera
+		let world=new World();
+		world.geometryList=geometryList;
+		world.camera=camera;
+
+		//MAKE a light and SUPPLY that as well
+		let light1=new Light(new Point(5,20,-5));
+		world.lightList.push(light1);
+
+		// let light2=new Light(new Point(-5,15,-5));
+		// world.lightList.push(light2);
+
+		//get canvas SO THAT we can create a pixel grid 
 		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
 		// this.renderer=new Engine(canvas.getContext('webgl'));
 		
 		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
+		
+		// USE driver TO GET pixel grid
+		pixelGridRenderer.pixelGrid=new ProceduralTextureDriver(500,500).computePixelGrid(world);
 
-		//RENDER using a pixel grid that will be COMPUTED by the RAY TRACER framework
-		pixelGridRenderer.pixelGrid=new ProceduralTextureDriver(500,500).computePixelGrid(geometryList,camera);
-
+		//draw
 		this.renderer=pixelGridRenderer;
 		this.renderer.draw();
 	}
