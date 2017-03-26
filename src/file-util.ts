@@ -1,3 +1,5 @@
+import * as Promise from 'bluebird';
+import { readFile } from 'fs';
 export interface AfterTextIsLoaded{
 	(Error,string?):void;
 }
@@ -10,17 +12,18 @@ export interface AfterJsonIsLoaded{
 	(Error,json?:any):void;
 }
 
-export function loadTextResource(url:string,callback:AfterTextIsLoaded){
-	let request = new XMLHttpRequest();
-	request.open('GET', url + '?nocache=' + Math.random(), true);
-	request.onload = function () {
-		if (request.status < 200 || request.status > 299) {
-			callback('Response code ' + request.status + ' on resource ' + url);
-		} else {
-			callback(null, request.responseText);
-		}
-	};
-	request.send();
+export function loadTextResource(url:string):Promise<any>{
+
+	return new Promise<any>((resolve,reject)=>{
+		readFile(url,'UTF-8',function(error,data){
+			console.log("before error");
+			if(error){
+				reject(error);
+			}
+			resolve(data);
+		});
+	});
+
 }
 
 export function loadImage(url:string,callback:AfterImageIsLoaded){
@@ -32,15 +35,11 @@ export function loadImage(url:string,callback:AfterImageIsLoaded){
 }
 
 export function loadJsonData(url:string,callback:AfterJsonIsLoaded){
-	loadTextResource(url,(error:Error,data:string)=>{
-		if(error){
-			callback(error);
-		}else{
-			try{
-				callback(null,JSON.parse(data));
-			}catch(exception){
-				callback(exception);
-			}
+	loadTextResource(url).then((data:string)=>{
+		try{
+			callback(null,JSON.parse(data));
+		}catch(exception){
+			callback(exception);
 		}
 	});
 }

@@ -3,36 +3,54 @@ import { World } from '../models/world';
 import { loadTextResource } from '../../file-util';
 import { readFileSync } from 'fs';
 import * as Promise from 'bluebird';
+import { GLDrawable } from './gl-drawable';
+import { StandardFragmentShader } from './standard-fragment-shader';
+import { StandardVertexShader } from './standard-vertex-shader';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
+	projectLocation:string
 	world:World;
 
-	constructor(gl:WebGLRenderingContext){
+	constructor(gl:WebGLRenderingContext,projectLocaiton:string){
 		this.gl=gl;
+		this.projectLocation=projectLocaiton;
 	}
 
-	draw(){//=2 units
+	collectAllDrawables():GLDrawable[]{
+		return this.world.geometryList;
+	}
+
+	draw(){//=? units
+
 		//alias to this.gl
 		let GL=this.gl;
 
-		
+		//collect up all the gldrawables that we need to render
+		let drawableList=this.collectAllDrawables();
+
+		//fire off the initialization on each drawable and collect their promises in another array
+		let promisesAfterInit:Promise<any>[]=[];
+		for(let drawable of drawableList){
+			promisesAfterInit.push(drawable.init(GL));
+		}
+
 
 		//initialization:
 		// load up the standard vertex shader
 		// let standardVertexShader=fs.readFileSync("../standard.vert.glsl");
 		// var vertexShaderId=createShader(GL,GL.VERTEX_SHADER,standardVertexShader);
-		loadTextResource("../standard.vert.glsl",(error:Error,standardVertexShader:string)=>{
+		// loadTextResource("../standard.vert.glsl",(error:Error,standardVertexShader:string)=>{
 
-			//load up the standard fragment shader
-			loadTextResource("../standard.vert.glsl",(error:Error,standardFragmentShader:string)=>{
-				var fragmentShaderId=createShader(GL,GL.VERTEX_SHADER,standardFragmentShader);
+		// 	//load up the standard fragment shader
+		// 	loadTextResource("../standard.vert.glsl",(error:Error,standardFragmentShader:string)=>{
+		// 		var fragmentShaderId=createShader(GL,GL.VERTEX_SHADER,standardFragmentShader);
 
 
+		// 	});
+		// });
 				//rendering:
 				requestAnimationFrame(this.step.bind(this));
-			});
-		});
 
 	}
 

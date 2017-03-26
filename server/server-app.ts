@@ -33,6 +33,12 @@ export class ServerApp {
 
 	private configureAPIRoutes(){
 
+		// absolute path to client build location (TODO security risk?)
+		this.app.get('/api/dist-loc', (req:express.Request, res:express.Response) => {
+			winston.debug("Sending absolute path to dist folder to client");
+			let distFolder=path.join(__dirname,'../','dist/');
+			res.send(distFolder);
+		});
 
 	}
 

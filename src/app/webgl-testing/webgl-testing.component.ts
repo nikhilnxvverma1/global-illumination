@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild,ElementRef  } from '@angular/core';
+import { Http,Headers,RequestOptions,Response } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/Rx';
 import { Renderer } from '../../graphics/renderer';
 import { WebGLRenderer } from '../../graphics/webgl/webgl-renderer';
 import { Engine } from '../../graphics/engine';
@@ -23,16 +26,30 @@ export class WebglTestingComponent implements OnInit {
 
 	@ViewChild('myCanvas') canvasElement:ElementRef;
 	private renderer:WebGLRenderer;
-	
-	constructor() { }
 
-	ngOnInit() { //=4 units
+	private clientBaseLocation:string;
+	
+	constructor(
+		private http:Http
+	) { }
+
+	ngOnInit() {//=2 units
+		//base location for dist build (TODO remove as it is unneeded)
+		this.retrieveBaseLocation().subscribe((baseLocation:string)=>{
+			this.clientBaseLocation=baseLocation;
+
+			//renderer setup
+			this.initializeRenderer();
+		});
+	}
+
+	private initializeRenderer() { //=4 units
 	
 		//get canvas SO THAT we can create a pixel grid 
 		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
 
 		//set a webgl based renderer
-		this.renderer=new WebGLRenderer(canvas.getContext('webgl'));
+		this.renderer=new WebGLRenderer(canvas.getContext('webgl'),this.clientBaseLocation);
 
 		//set the world on the webgl world
 		this.renderer.world=this.makeSimpleWorld();
@@ -112,5 +129,9 @@ export class WebglTestingComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 		return camera;
+	}
+
+	retrieveBaseLocation():Observable<string>{//=1 unit
+		return this.http.get("/api/dist-loc").map((response:Response)=>{return response.text()});
 	}
 }

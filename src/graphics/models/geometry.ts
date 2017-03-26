@@ -1,3 +1,4 @@
+import { GLDrawable } from '../webgl/gl-drawable';
 import { Point } from './point';
 import { Vector } from './vector';
 import { Color } from './color';
@@ -7,7 +8,7 @@ import { PhongIlluminationModel } from './phong-illumination';
 import { World } from './world';
 import { PointOnModel } from './point-on-model';
 
-export abstract class Geometry{
+export abstract class Geometry extends GLDrawable{
 	position:Point;
 	normal:Vector;
 	color:Color;
