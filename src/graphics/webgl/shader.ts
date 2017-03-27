@@ -1,18 +1,22 @@
 import { GLDrawable } from './gl-drawable';
 
 export abstract class Shader{
-	shaderId:WebGLShader;
+	private _shaderId:WebGLShader;
 
+	get shaderId():WebGLShader{
+		return this._shaderId;
+	}
 	/** Returns GL.VERTEX_SHADER or GL.FRAGMENT_SHADER depending on whose extending this */
 	abstract getShaderType():number;
 
 	/** Returns the shader's raw source code as a string */
 	abstract getSourceCode():string;
 
+	/** Sets up the shader by compiling its sources */
 	init(GL:WebGLRenderingContext,glDrawable:GLDrawable){//=5 units
 
 		//make shader id 
-		this.shaderId=GL.createShader(this.getShaderType());
+		this._shaderId=GL.createShader(this.getShaderType());
 
 		//compile shader
 		GL.shaderSource(this.shaderId,this.getSourceCode());
@@ -32,6 +36,9 @@ export abstract class Shader{
 			return null;//something went wrong
 		}
 	}
+
+	/** Responsible for setting up any data that needs to be passed down to the shaders */
+	abstract drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable);
 }
 
 export abstract class VertexShader extends Shader{

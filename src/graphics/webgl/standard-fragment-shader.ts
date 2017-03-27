@@ -18,7 +18,8 @@ export class StandardFragmentShader extends FragmentShader{
 		return code;
 	}
 
-	draw(GLDrawable:GLDrawable,gl:WebGLRenderingContext){
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable){
+
 		
 	}
 

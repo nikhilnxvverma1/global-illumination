@@ -20,8 +20,16 @@ export class StandardVertexShader extends VertexShader{
 		return code;
 	}
 
-	draw(GLDrawable:GLDrawable,gl:WebGLRenderingContext){
-		
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable){//=3 steps
+
+		//position location
+		let positionLocation=GL.getAttribLocation(glDrawable.webGLProgram,"position");
+
+		//enable array for this position attribute
+		GL.enableVertexAttribArray(positionLocation);
+
+		//supply position location to shader
+		GL.vertexAttribPointer(positionLocation,2,GL.FLOAT,false,0,0);
 	}
 
 }

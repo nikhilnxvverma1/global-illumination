@@ -6,11 +6,14 @@ import * as Promise from 'bluebird';
 import { GLDrawable } from './gl-drawable';
 import { StandardFragmentShader } from './standard-fragment-shader';
 import { StandardVertexShader } from './standard-vertex-shader';
+import { FixedVertexDrawable } from './fixed-vertex-drawable';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
 	projectLocation:string
 	world:World;
+
+	private drawableList:GLDrawable[];//TODO temporary
 
 	constructor(gl:WebGLRenderingContext,projectLocaiton:string){
 		this.gl=gl;
@@ -18,43 +21,52 @@ export class WebGLRenderer implements Renderer{
 	}
 
 	collectAllDrawables():GLDrawable[]{
-		return this.world.geometryList;
+		return [new FixedVertexDrawable()];
 	}
 
-	draw(){//=? units
+	draw(){//=4 steps
 
 		//alias to this.gl
 		let GL=this.gl;
 
-		//collect up all the gldrawables that we need to render
-		let drawableList=this.collectAllDrawables();
+		//all the drawables in a list
+		this.drawableList=this.collectAllDrawables();
 
-		//fire off the initialization on each drawable and collect their promises in another array
-		let promisesAfterInit:Promise<any>[]=[];
-		for(let drawable of drawableList){
-			promisesAfterInit.push(drawable.init(GL));
+		//initialize drawables
+		for(let drawable of this.drawableList){
+			drawable.init(GL);
 		}
 
-
-		//initialization:
-		// load up the standard vertex shader
-		// let standardVertexShader=fs.readFileSync("../standard.vert.glsl");
-		// var vertexShaderId=createShader(GL,GL.VERTEX_SHADER,standardVertexShader);
-		// loadTextResource("../standard.vert.glsl",(error:Error,standardVertexShader:string)=>{
-
-		// 	//load up the standard fragment shader
-		// 	loadTextResource("../standard.vert.glsl",(error:Error,standardFragmentShader:string)=>{
-		// 		var fragmentShaderId=createShader(GL,GL.VERTEX_SHADER,standardFragmentShader);
-
-
-		// 	});
-		// });
-				//rendering:
-				requestAnimationFrame(this.step.bind(this));
+		//rendering:
+		requestAnimationFrame(this.step.bind(this));
 
 	}
 
-	step(time: number): void{//=1 units
+	step(time:number):void{//=6 steps
+
+		//alias to this.gl
+		let GL=this.gl;
+
+		//set the viewport
+		GL.viewport(0,0,GL.canvas.width,GL.canvas.height);
+
+		//clear background to a black color
+		GL.clearColor(0,0,0,0);
+		GL.clear(GL.COLOR_BUFFER_BIT);
+
+		//draw drawables
+		for(let drawable of this.drawableList){
+			drawable.drawSetup(GL);
+		}
+
+		//draw the triangles (in array buffer)
+		GL.drawArrays(GL.TRIANGLES,0,3);
+
+		//request another animation frame to play this in a loop
+		requestAnimationFrame(this.step.bind(this));
+	}
+
+	oldStep(time: number): void{//=? units
 
 		//alias to this.gl
 		let GL=this.gl;

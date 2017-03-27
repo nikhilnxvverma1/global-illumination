@@ -11,4 +11,8 @@ export class FixedVertexDrawable extends GLDrawable{
 			0.9,0
 		]
 	}
+
+	vertexData():Float32Array{
+		return new Float32Array(this.vertices);
+	}
 }
