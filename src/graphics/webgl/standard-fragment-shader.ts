@@ -12,14 +12,10 @@ void main(){
 
 //commmon vertex shader id shader across all shaders
 let fragmentShaderId:number;
-export class StandardFragmentShader implements FragmentShader{
+export class StandardFragmentShader extends FragmentShader{
 
-	getShaderId():number{
-		return fragmentShaderId;
-	}
-
-	init(GLDrawable:GLDrawable,gl:WebGLRenderingContext){
-		
+	getSourceCode():string{
+		return code;
 	}
 
 	draw(GLDrawable:GLDrawable,gl:WebGLRenderingContext){

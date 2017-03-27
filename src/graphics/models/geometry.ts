@@ -8,7 +8,7 @@ import { PhongIlluminationModel } from './phong-illumination';
 import { World } from './world';
 import { PointOnModel } from './point-on-model';
 
-export abstract class Geometry extends GLDrawable{
+export abstract class Geometry{
 	position:Point;
 	normal:Vector;
 	color:Color;

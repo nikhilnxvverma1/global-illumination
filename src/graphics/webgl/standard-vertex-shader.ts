@@ -14,22 +14,10 @@ void main(){
 `
 ;
 
-export class StandardVertexShader implements VertexShader{
+export class StandardVertexShader extends VertexShader{
 
-	/** commmon vertex shader id shader across all shaders */
-	static readonly vertexShaderId:number=-1;
-
-	static loadFromDirectory(url:string){
-		// load up the text resource for the standard vertex shader
-
-	}
-
-	getShaderId():number{
-		return StandardVertexShader.vertexShaderId;
-	}
-
-	init(GLDrawable:GLDrawable,gl:WebGLRenderingContext){
-		
+	getSourceCode():string{
+		return code;
 	}
 
 	draw(GLDrawable:GLDrawable,gl:WebGLRenderingContext){
