@@ -3,6 +3,7 @@ import { Vector } from './vector';
 import { Point } from './point';
 import { Ray } from './ray';
 import { PointOnModel } from './point-on-model';
+import { Color } from './color';
 
 export class Sphere extends Geometry {//=8 units
 	radius: number
@@ -59,4 +60,5 @@ export class Sphere extends Geometry {//=8 units
 		//TODO uv point of sphere
 		return pointOnModel;
 	}
+
 }

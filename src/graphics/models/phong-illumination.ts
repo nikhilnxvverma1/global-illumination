@@ -27,7 +27,7 @@ export class PhongIlluminationModel implements IlluminationModel{
 
 	illuminate(point: Point, geometry: Geometry, world: World): Color {
 		//object color
-		let co=geometry.color.toFractionalValues();
+		let co=geometry.colorPickingStrategy.colorAt(point).toFractionalValues();
 
 		let ambientComponent = world.ambientLight.toFractionalValues().product(co).scalerProduct(this.ka);
 		let diffuseComponent: Color = new Color(0, 0, 0, 0);

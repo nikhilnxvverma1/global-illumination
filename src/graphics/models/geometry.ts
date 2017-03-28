@@ -7,12 +7,14 @@ import { IlluminationModel } from './illumination-model';
 import { PhongIlluminationModel } from './phong-illumination';
 import { World } from './world';
 import { PointOnModel } from './point-on-model';
+import { ColorPickingStrategy,SimpleColorStrategy } from '../color-picking-strategy';
 
 export abstract class Geometry{
 	position:Point;
 	normal:Vector;
 	color:Color;
 	illuminationModel:IlluminationModel=new PhongIlluminationModel();
+	colorPickingStrategy:ColorPickingStrategy=new SimpleColorStrategy(this);
 
 	abstract intersection(ray:Ray):Point;
 
