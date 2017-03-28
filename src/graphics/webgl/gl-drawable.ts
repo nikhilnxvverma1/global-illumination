@@ -137,9 +137,9 @@ export abstract class GLDrawable{
 		GL.bindBuffer(GL.ARRAY_BUFFER,this.vertexBuffer);
 
 		//vertex shader's setup
-		this.vertexShader.drawSetup(GL,this);
+		this.vertexShader.drawSetup(GL,this,camera,lights);
 
 		//fragment shader's setup
-		this.fragmentShader.drawSetup(GL,this);
+		this.fragmentShader.drawSetup(GL,this,camera,lights);
 	}
 }

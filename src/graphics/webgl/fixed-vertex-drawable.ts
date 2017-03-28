@@ -6,9 +6,9 @@ export class FixedVertexDrawable extends GLDrawable{
 	constructor(){
 		super();
 		this.vertices=[
-			0,0,
-			0,0.6,
-			0.9,0
+			0,0,0,
+			0,0.6,0,
+			0.9,0,0
 		]
 	}
 

@@ -26,6 +26,7 @@
     "bluebird": "^3.4.7",
     "core-js": "^2.4.1",
     "express": "^4.14.1",
+    "gl-matrix": "^2.3.2",
     "node-sass": "^4.5.0",
     "orientjs": "^2.2.4",
     "rxjs": "^5.0.1",
