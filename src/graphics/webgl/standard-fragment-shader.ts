@@ -1,5 +1,7 @@
 import { GLDrawable } from './gl-drawable';
 import { FragmentShader } from './shader';
+import { Camera } from '../models/camera';
+import { Light } from '../models/light';
 
 /** Raw shader code in string  */
 let code=
@@ -18,7 +20,7 @@ export class StandardFragmentShader extends FragmentShader{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable){
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){
 
 		
 	}

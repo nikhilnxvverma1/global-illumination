@@ -1,4 +1,6 @@
 import { GLDrawable } from './gl-drawable';
+import { Camera } from '../models/camera';
+import { Light } from '../models/light';
 
 export abstract class Shader{
 	private _shaderId:WebGLShader;
@@ -38,7 +40,7 @@ export abstract class Shader{
 	}
 
 	/** Responsible for setting up any data that needs to be passed down to the shaders */
-	abstract drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable);
+	abstract drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]);
 }
 
 export abstract class VertexShader extends Shader{

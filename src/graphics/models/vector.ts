@@ -70,4 +70,8 @@ export class Vector{
 		return new Vector(to.x-from.x,to.y-from.y,to.z-from.z);
 	}
 
+	asArray():number[]{
+		return [this.x,this.y,this.z];
+	}
+
 }

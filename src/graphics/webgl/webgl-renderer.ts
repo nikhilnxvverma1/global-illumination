@@ -56,7 +56,7 @@ export class WebGLRenderer implements Renderer{
 
 		//draw drawables
 		for(let drawable of this.drawableList){
-			drawable.drawSetup(GL);
+			drawable.drawSetup(GL,this.world.camera,this.world.lightList);
 		}
 
 		//draw the triangles (in array buffer)

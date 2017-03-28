@@ -1,5 +1,6 @@
 {
   "globalDependencies": {
+    "gl-matrix": "registry:dt/gl-matrix#2.2.2+20161114212859",
     "node": "registry:dt/node#7.0.0+20170322231424"
   },
   "dependencies": {

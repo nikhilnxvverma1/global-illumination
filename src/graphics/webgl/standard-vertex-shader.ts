@@ -3,6 +3,8 @@ import { VertexShader } from './shader';
 import { loadTextResource } from '../../file-util';
 import * as Promise from 'bluebird';
 import * as path from 'path';
+import { Camera } from '../models/camera';
+import { Light } from '../models/light';
 
 /** Raw shader code in string  */
 let code=
@@ -20,7 +22,7 @@ export class StandardVertexShader extends VertexShader{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable){//=3 steps
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){//=3 steps
 
 		//position location
 		let positionLocation=GL.getAttribLocation(glDrawable.webGLProgram,"position");

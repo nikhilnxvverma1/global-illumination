@@ -2,8 +2,16 @@ import { StandardVertexShader } from './standard-vertex-shader';
 import { StandardFragmentShader } from './standard-fragment-shader';
 import * as Promise from 'bluebird';
 import { VertexShader,FragmentShader } from './shader';
+import { Vector } from '../models/vector';
+import { Point } from '../models/point';
+import { Camera } from '../models/camera';
+import { Light } from '../models/light';
 
 export abstract class GLDrawable{
+	private _scale:Vector;
+	private _rotation:Vector;
+	private _translation:Point;
+
 	private _webGLProgram:WebGLProgram;
 	private _vertexBuffer:WebGLBuffer;
 	private _textureBufferIds:number[]=[];
@@ -15,6 +23,11 @@ export abstract class GLDrawable{
 		//use standard shaders
 		this._vertexShader=new StandardVertexShader();
 		this._fragmentShader=new StandardFragmentShader();
+
+		//initialize with default values:
+		this.scale=new Vector(1,1,1);
+		this.rotation=new Vector(1,1,1);
+		this.translation=new Point(0,0,0);
 
 	}
 
@@ -34,6 +47,30 @@ export abstract class GLDrawable{
 
 	get vertexBuffer():WebGLBuffer{
 		return this._vertexBuffer;
+	}
+
+	get scale():Vector{
+		return this._scale;
+	}
+
+	set scale(v:Vector){
+		this._scale=v;
+	}
+
+	get rotation():Vector{
+		return this._rotation;
+	}
+
+	set rotation(v:Vector){
+		this._rotation=v;
+	}
+
+	get translation():Point{
+		return this._translation;
+	}
+
+	set translation(v:Point){
+		this._translation=v;
 	}
 
 	init(GL:WebGLRenderingContext):boolean{//=2 steps
@@ -92,7 +129,7 @@ export abstract class GLDrawable{
 
 	} 
 
-	drawSetup(GL:WebGLRenderingContext){//=4 steps
+	drawSetup(GL:WebGLRenderingContext,camera:Camera,lights:Light[]){//=4 steps
 		//use the shader program we setup earlier, 
 		GL.useProgram(this.webGLProgram);
 

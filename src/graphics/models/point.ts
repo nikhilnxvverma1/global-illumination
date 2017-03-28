@@ -62,4 +62,8 @@ export class Point{
 
 		return vector.subtract(normal.scalerProduct(fraction));
 	}
+
+	asArray():number[]{
+		return [this.x,this.y,this.z];
+	}
 }
