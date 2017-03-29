@@ -42,7 +42,7 @@ export class WebGLRenderer implements Renderer{
 
 	}
 
-	step(time:number):void{//=6 steps
+	step(time:number):void{//=7 steps
 
 		//alias to this.gl
 		let GL=this.gl;
@@ -53,6 +53,12 @@ export class WebGLRenderer implements Renderer{
 		//clear background to a black color
 		GL.clearColor(0,0,0,0);
 		GL.clear(GL.COLOR_BUFFER_BIT);
+
+		//setup depth testing and culling
+		GL.enable(GL.DEPTH_TEST);
+		GL.enable(GL.CULL_FACE);
+		GL.frontFace(GL.CCW);
+		GL.cullFace(GL.BACK);
 
 		//draw drawables
 		for(let drawable of this.drawableList){

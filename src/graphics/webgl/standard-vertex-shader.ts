@@ -6,6 +6,7 @@ import * as path from 'path';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
 import { mat4 } from 'gl-matrix';
+import * as util from '../../util';
 
 /** Raw shader code in string  */
 let code=
@@ -15,6 +16,7 @@ attribute vec3 position;
 uniform mat4 compositeMatrix;
 void main(){
 	gl_Position=compositeMatrix * vec4(position,1.0);
+	// gl_Position=vec4(position,1.0);
 }
 `
 ;
@@ -42,34 +44,33 @@ export class StandardVertexShader extends VertexShader{
 
 	buildAndSendCompositeMatrix(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera){//=5 steps
 
-		//model transformations
+		//model transformation to world space
 		let worldMatrix=mat4.create();
-		mat4.rotateX(worldMatrix,worldMatrix,toRadians(glDrawable.rotation.x));
-		mat4.rotateY(worldMatrix,worldMatrix,toRadians(glDrawable.rotation.y));
-		mat4.rotateZ(worldMatrix,worldMatrix,toRadians(glDrawable.rotation.z));
 		mat4.scale(worldMatrix,worldMatrix,glDrawable.scale.asArray());
+		mat4.rotateX(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.x));
+		mat4.rotateY(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.y));
+		mat4.rotateZ(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.z));
 		mat4.translate(worldMatrix,worldMatrix,glDrawable.translation.asArray());
 
 		//view matrix
 		let viewMatrix=mat4.create();
-		mat4.lookAt(viewMatrix,camera.origin.asArray(),camera.lookAt.asArray(),camera.up.asArray());
+		mat4.lookAt(viewMatrix,camera.origin.asVec3(),camera.lookAt.asVec3(),camera.up.asVec3());
 
 		//perspective
 		let projectionMatrix=mat4.create();
-		mat4.perspective(projectionMatrix,toRadians(45),1,camera.near,camera.far);
+		// mat4.perspective(projectionMatrix, camera.fieldOfViewInRadians(),camera.aspectRatio(),0.1,100);//doesn't work
+		mat4.frustum(projectionMatrix,camera.left,camera.right,camera.bottom,camera.top,camera.near,camera.far);//uses traditional formula
 
 		//composite matrix
 		let compositeMatrix=mat4.create();
-		mat4.multiply(compositeMatrix,projectionMatrix,viewMatrix);
-		mat4.multiply(compositeMatrix,compositeMatrix,worldMatrix);
+		mat4.multiply(compositeMatrix,viewMatrix,worldMatrix);
+		mat4.multiply(compositeMatrix,projectionMatrix,compositeMatrix);
 
 		//send it down to the shader
 		let compositeMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"compositeMatrix");
-		GL.uniformMatrix4fv(compositeMatrixLocation,false,projectionMatrix);
+		GL.uniformMatrix4fv(compositeMatrixLocation,false,compositeMatrix);
 	}
 
 }
 
-function toRadians(degree:number):number{//=1 step
-	return degree*(Math.PI/180);
-}
+let doneOnce=false;

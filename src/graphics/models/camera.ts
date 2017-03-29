@@ -16,6 +16,9 @@ export class Camera {
 	near: number;
 	far: number;
 
+	/** Vertical field of view in degrees*/
+	fieldOfView:number=45;
+
 	constructor(
 		origin = new Point(0, 0, 0),
 		lookAt = new Vector(0, 0, -1),
@@ -36,5 +39,14 @@ export class Camera {
 		nearPlane.normal=normal;
 		nearPlane.position=center;
 		return nearPlane;
+	}
+
+	aspectRatio():number{//=1 step
+		return (this.right - this.left) / (this.top - this.bottom);
+	}
+
+	/**Returns field of view in radians */
+	fieldOfViewInRadians(): number {//=1 step
+		return this.fieldOfView * (Math.PI / 180);//45 degrees
 	}
 }

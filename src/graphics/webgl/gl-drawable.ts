@@ -31,6 +31,7 @@ export abstract class GLDrawable{
 
 	}
 
+	/** Vertex data as an continous array of values. Must be Counter Clockwise */
 	abstract vertexData():Float32Array;
 
 	get webGLProgram():WebGLProgram{

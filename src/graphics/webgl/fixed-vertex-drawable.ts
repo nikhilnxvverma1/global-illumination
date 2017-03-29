@@ -5,11 +5,12 @@ export class FixedVertexDrawable extends GLDrawable{
 
 	constructor(){
 		super();
+		//counter clockwise vertices
 		this.vertices=[
-			0,0,0,
-			0,0.6,0,
-			0.9,0,0
-		]
+			0,0,-1,
+			20,0,-1,
+			0,20,-1
+		];
 	}
 
 	vertexData():Float32Array{

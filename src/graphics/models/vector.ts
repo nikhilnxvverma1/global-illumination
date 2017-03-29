@@ -1,5 +1,6 @@
 import { Point } from './point';
 import { Ray } from './ray';
+import { vec3 } from 'gl-matrix';
 
 export class Vector{
 	x:number;
@@ -73,6 +74,11 @@ export class Vector{
 	/**Returns a homogenous array equivalent */
 	asArray():number[]{
 		return [this.x,this.y,this.z,1];
+	}
+
+	/** Returns gl-Matrix's vec3 representation */
+	asVec3():vec3{
+		return vec3.fromValues(this.x,this.y,this.z);
 	}
 
 }
