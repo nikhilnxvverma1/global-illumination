@@ -13,6 +13,7 @@ import { RectQuad } from '../../graphics/models/rect-quad';
 import { ProceduralTextureDriver } from './procedural-texture-driver';
 import { World } from '../../graphics/models/world';
 import { Light } from '../../graphics/models/light';
+import { CheckerBoxStrategy } from '../../graphics/color-picking-strategy';
 
 @Component({
   selector: 'app-procedural-texturing',
@@ -56,6 +57,7 @@ export class ProceduralTexturingComponent implements OnInit {
 		plane.color=new Color().set("#141574");
 		plane.width=150;
 		plane.height=150;
+		plane.colorPickingStrategy=new CheckerBoxStrategy(plane);
 
 		//put all these in a list
 		let geometryList:Geometry[]=[];

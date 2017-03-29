@@ -1,5 +1,6 @@
 import { Ray } from './ray';
 import { Vector } from './vector';
+import { mat4 } from 'gl-matrix';
 
 export class Point{
 	x:number;
@@ -63,7 +64,13 @@ export class Point{
 		return vector.subtract(normal.scalerProduct(fraction));
 	}
 
+	/**Returns a homogenous array equivalent */
 	asArray():number[]{
-		return [this.x,this.y,this.z];
+		return [this.x,this.y,this.z,1];
+	}
+
+	/**Returns the difference in a new point */
+	subtract(that:Point):Point{
+		return new Point(this.x-that.x,this.y-that.y,this.z-that.z);
 	}
 }
