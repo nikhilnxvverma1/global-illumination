@@ -28,6 +28,7 @@ export class PhongIlluminationModel implements IlluminationModel{
 	illuminate(point: Point, geometry: Geometry, world: World): Color {
 		//object color
 		let co=geometry.colorPickingStrategy.colorAt(point).toFractionalValues();
+		// let co=geometry.color.toFractionalValues();
 
 		let ambientComponent = world.ambientLight.toFractionalValues().product(co).scalerProduct(this.ka);
 		let diffuseComponent: Color = new Color(0, 0, 0, 0);
@@ -61,17 +62,21 @@ export class PhongIlluminationModel implements IlluminationModel{
 				}
 			}
 
+			// if(best==undefined){
+			// 	console.log("Best is undefiend");
+			// }
+
 			//add the diffuse and specular component only if there was no intersection
 			if (best.isEmpty()) {
 				let n=intersectionData.normal;
 				let si=intersectionData.incoming;
 				let ri=intersectionData.reflective;
 				
-				let diffuseColor=li.product(co).scalerProduct(si.dot(n));
+				let diffuseColor=li.product(co).scalerProduct(Math.max(0,si.dot(n)));
 				diffuseComponent.addToSelf(diffuseColor);
 
 				let cs=light.color.toFractionalValues();
-				let specularColor=li.product(cs).scalerProduct(Math.pow(ri.dot(n),this.ke));
+				let specularColor=li.product(cs).scalerProduct(Math.pow(Math.max(0,ri.dot(n)),this.ke));
 				specularComponent.addToSelf(specularColor);
 			}
 		}
@@ -79,7 +84,7 @@ export class PhongIlluminationModel implements IlluminationModel{
 
 		// return intersectionData.geometry.color;
 		let fractionalColor = ambientComponent.sum(diffuseComponent.scalerProduct(this.kd)).sum(specularComponent.scalerProduct(this.ks));
-		let in256Range=fractionalColor.toWholeValues().makeNegativeValuesPositive();
+		let in256Range=fractionalColor.toWholeValues();
 		return in256Range;
 	}
 }

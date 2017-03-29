@@ -52,10 +52,10 @@ export class Color {
 
 	toWholeValues(): Color {
 		let clone = new Color();
-		clone.r = Math.ceil(this.r * 255);
-		clone.g = Math.ceil(this.g * 255);
-		clone.b = Math.ceil(this.b * 255);
-		clone.a = Math.ceil(this.a * 255);
+		clone.r = Math.min(255,Math.ceil(this.r * 255));
+		clone.g = Math.min(255,Math.ceil(this.g * 255));
+		clone.b = Math.min(255,Math.ceil(this.b * 255));
+		clone.a = Math.min(255,Math.ceil(this.a * 255));
 		return clone;
 	}
 
@@ -97,6 +97,7 @@ export class Color {
 		this.r = this.r < 0 ? -this.r : this.r;
 		this.g = this.g < 0 ? -this.g : this.g;
 		this.b = this.b < 0 ? -this.b : this.b;
+		this.a = this.a < 0 ? -this.a : this.a;
 		return this;
 	}
 

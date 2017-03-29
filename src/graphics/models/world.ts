@@ -6,7 +6,7 @@ import { Camera } from './camera';
 export class World{
 	camera:Camera;
 	geometryList:Geometry[]=[];
-	ambientLight:Color=new Color(255,255,255,255);
+	ambientLight:Color=new Color(200,200,200,255);
 	lightList:Light[]=[];
 	
 }
