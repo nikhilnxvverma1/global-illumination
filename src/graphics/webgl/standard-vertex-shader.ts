@@ -13,33 +13,55 @@ let code=
 `
 precision mediump float;
 attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 texCoord;
 uniform mat4 compositeMatrix;
 void main(){
 	gl_Position=compositeMatrix * vec4(position,1.0);
+
+	// if you don't use these vectors, you can't get their location in the application code
+	vec3 n=normal;
+	vec2 t=texCoord;
 	// gl_Position=vec4(position,1.0);
 }
 `
 ;
 
+const FLOAT_SIZE=4;
+
+/** Expects 8 floats per vertex : position(3) + normal(3) + texture coordinates(3) */
 export class StandardVertexShader extends VertexShader{
 
 	getSourceCode():string{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){//=4 steps
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){//=5 steps
 
 		//composite matrix
 		this.buildAndSendCompositeMatrix(GL,glDrawable,camera);
 
-		//position location
-		let positionLocation=GL.getAttribLocation(glDrawable.webGLProgram,"position");
+		//8 floats per vertex
+		let stride = 8 * FLOAT_SIZE;
 
-		//enable array for this position attribute
+		//get position location,enable that location(or index), and send data to that 'index'
+		let positionLocation = GL.getAttribLocation(glDrawable.webGLProgram, "position");
 		GL.enableVertexAttribArray(positionLocation);
+		GL.vertexAttribPointer(positionLocation, 3, GL.FLOAT, false, stride, 0);//first 3 floats
+		GL.disableVertexAttribArray(positionLocation);
 
-		//supply position location to shader
-		GL.vertexAttribPointer(positionLocation,3,GL.FLOAT,false,0,0);
+		//get normal location,enable that location(or index), and send data to that 'index'
+		let normalLocation = GL.getAttribLocation(glDrawable.webGLProgram, "normal");
+		GL.enableVertexAttribArray(normalLocation);
+		GL.vertexAttribPointer(normalLocation, 3, GL.FLOAT, false, stride, 3 * FLOAT_SIZE);//next 3 floats
+		GL.disableVertexAttribArray(normalLocation);
+
+		//get texCoord location,enable that location(or index), and send data to that 'index'
+		let texCoordLocation = GL.getAttribLocation(glDrawable.webGLProgram, "texCoord");
+		GL.enableVertexAttribArray(texCoordLocation);
+		GL.vertexAttribPointer(texCoordLocation, 2, GL.FLOAT, false, stride, 6 * FLOAT_SIZE);//final 2 floats after first 6 floats
+		GL.disableVertexAttribArray(texCoordLocation);
+
 	}
 
 	buildAndSendCompositeMatrix(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera){//=5 steps
@@ -72,5 +94,3 @@ export class StandardVertexShader extends VertexShader{
 	}
 
 }
-
-let doneOnce=false;
