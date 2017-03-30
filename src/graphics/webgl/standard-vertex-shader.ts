@@ -17,12 +17,12 @@ attribute vec3 normal;
 attribute vec2 texCoord;
 uniform mat4 compositeMatrix;
 void main(){
-	gl_Position=compositeMatrix * vec4(position,1.0);
 
 	// if you don't use these vectors, you can't get their location in the application code
 	vec3 n=normal;
 	vec2 t=texCoord;
-	// gl_Position=vec4(position,1.0);
+	
+	gl_Position=compositeMatrix * vec4(position,1.0);
 }
 `
 ;
@@ -48,19 +48,16 @@ export class StandardVertexShader extends VertexShader{
 		let positionLocation = GL.getAttribLocation(glDrawable.webGLProgram, "position");
 		GL.enableVertexAttribArray(positionLocation);
 		GL.vertexAttribPointer(positionLocation, 3, GL.FLOAT, false, stride, 0);//first 3 floats
-		GL.disableVertexAttribArray(positionLocation);
 
 		//get normal location,enable that location(or index), and send data to that 'index'
 		let normalLocation = GL.getAttribLocation(glDrawable.webGLProgram, "normal");
 		GL.enableVertexAttribArray(normalLocation);
 		GL.vertexAttribPointer(normalLocation, 3, GL.FLOAT, false, stride, 3 * FLOAT_SIZE);//next 3 floats
-		GL.disableVertexAttribArray(normalLocation);
 
 		//get texCoord location,enable that location(or index), and send data to that 'index'
 		let texCoordLocation = GL.getAttribLocation(glDrawable.webGLProgram, "texCoord");
 		GL.enableVertexAttribArray(texCoordLocation);
 		GL.vertexAttribPointer(texCoordLocation, 2, GL.FLOAT, false, stride, 6 * FLOAT_SIZE);//final 2 floats after first 6 floats
-		GL.disableVertexAttribArray(texCoordLocation);
 
 	}
 
