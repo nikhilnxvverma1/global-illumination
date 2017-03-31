@@ -6,6 +6,8 @@ import { Vector } from '../models/vector';
 import { Point } from '../models/point';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
+import { Behavior,InitAction,UpdateAction } from './behavior';
+import { removeFromList } from '../../util';
 
 export abstract class GLDrawable{
 	private _scale:Vector;
@@ -18,6 +20,11 @@ export abstract class GLDrawable{
 	private _textureBufferIds:number[]=[];
 	private _vertexShader:VertexShader;
 	private _fragmentShader:FragmentShader;
+
+	private _initActions:InitAction[]=[];
+	private _updateActions:UpdateAction[]=[];
+
+	private behaviorList:Behavior[]=[];
 
 	constructor(){
 
@@ -84,7 +91,15 @@ export abstract class GLDrawable{
 		this._translation=v;
 	}
 
-	init(GL:WebGLRenderingContext):boolean{//=2 steps
+	get initActions():InitAction[]{
+		return this._initActions;
+	}
+
+	get updateActions():UpdateAction[]{
+		return this._updateActions;
+	}
+
+	init(GL:WebGLRenderingContext):boolean{//=3 steps
 
 		//shader program
 		let shaderSuccess = this.createShaderProgram(GL);
@@ -92,7 +107,13 @@ export abstract class GLDrawable{
 		//set vertex data if successful
 		if(shaderSuccess){
 			this.createVertexBuffer(GL);
+
+			//run all init initialization actions
+			for(let initAction of this.initActions){
+				initAction(this,GL);
+			}
 		}
+
 
 		return shaderSuccess;
 	}
@@ -149,7 +170,7 @@ export abstract class GLDrawable{
 
 	} 
 
-	drawSetup(GL:WebGLRenderingContext,camera:Camera,lights:Light[]){//=4 steps
+	drawSetup(GL:WebGLRenderingContext,camera:Camera,lights:Light[],dTime:number){//=5 steps
 		//use the shader program we setup earlier, 
 		GL.useProgram(this.webGLProgram);
 
@@ -161,5 +182,27 @@ export abstract class GLDrawable{
 
 		//fragment shader's setup
 		this.fragmentShader.drawSetup(GL,this,camera,lights);
+
+		//run all update actions
+		for(let updateAction of this.updateActions){
+			updateAction(dTime,this,GL);
+		}
+	}
+
+	addBehavior(behavior:Behavior){//=2 steps
+
+		//attach function handlers of this behavior(and bind to this object)
+		this.initActions.push(behavior.initAction.bind(behavior));
+		this.updateActions.push(behavior.updateAction.bind(behavior));
+
+		//keep track of this behavior by adding to list
+		this.behaviorList.push(behavior);
+	}
+
+	removeBehavior(behavior:Behavior){//=3 steps
+		removeFromList(behavior.initAction,this.initActions);
+		removeFromList(behavior.updateAction,this.updateActions);
+		removeFromList(behavior,this.behaviorList);
+
 	}
 }

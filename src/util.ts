@@ -12,3 +12,13 @@ export function printMat4(mat:mat4){//=1 step
 		console.log(row);
 	}
 }
+
+/** Removes an object from any generic list */
+export function removeFromList(object,array:any[]):boolean{//=2 steps
+	//find index
+	let index=array.indexOf(object);
+
+	//remove object at that index
+	let removed=array.splice(index,1);
+	return removed.length>=1;
+}
