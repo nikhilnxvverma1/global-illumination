@@ -27,7 +27,7 @@ export abstract class GLDrawable{
 
 		//initialize with default values:
 		this.scale=new Vector(1,1,1);
-		this.rotation=new Vector(1,1,1);
+		this.rotation=new Vector(0,0,0);
 		this.translation=new Point(0,0,0);
 
 	}

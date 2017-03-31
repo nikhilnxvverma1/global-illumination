@@ -21,7 +21,7 @@ void main(){
 	// if you don't use these vectors, you can't get their location in the application code
 	vec3 n=normal;
 	vec2 t=texCoord;
-	
+
 	gl_Position=compositeMatrix * vec4(position,1.0);
 }
 `
@@ -84,6 +84,7 @@ export class StandardVertexShader extends VertexShader{
 		let compositeMatrix=mat4.create();
 		mat4.multiply(compositeMatrix,viewMatrix,worldMatrix);
 		mat4.multiply(compositeMatrix,projectionMatrix,compositeMatrix);
+		// mat4.multiply(compositeMatrix,projectionMatrix,viewMatrix);
 
 		//send it down to the shader
 		let compositeMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"compositeMatrix");

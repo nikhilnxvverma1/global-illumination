@@ -6,7 +6,8 @@ import * as Promise from 'bluebird';
 import { GLDrawable } from './gl-drawable';
 import { StandardFragmentShader } from './standard-fragment-shader';
 import { StandardVertexShader } from './standard-vertex-shader';
-import { FixedVertexDrawable } from './fixed-vertex-drawable';
+import { CustomVertexDrawable } from './custom-vertex-drawable';
+import { Vector } from '../models/vector';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
@@ -21,7 +22,9 @@ export class WebGLRenderer implements Renderer{
 	}
 
 	collectAllDrawables():GLDrawable[]{
-		return [new FixedVertexDrawable()];
+		let cube=new CustomVertexDrawable().cube();
+		cube.translation.z=-1.1;
+		return [cube];
 	}
 
 	draw(){//=4 steps
