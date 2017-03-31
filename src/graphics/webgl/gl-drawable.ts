@@ -14,6 +14,7 @@ export abstract class GLDrawable{
 
 	private _webGLProgram:WebGLProgram;
 	private _vertexBuffer:WebGLBuffer;
+	private _elementBuffer:WebGLBuffer;
 	private _textureBufferIds:number[]=[];
 	private _vertexShader:VertexShader;
 	private _fragmentShader:FragmentShader;
@@ -31,8 +32,13 @@ export abstract class GLDrawable{
 
 	}
 
+	abstract vertexCount():number;
+
 	/** Vertex data as an continous array of values. Must be Counter Clockwise */
 	abstract vertexData():Float32Array;
+
+	/** Index data corresponding to vertices.*/
+	abstract elementIndices():Uint16Array;
 
 	get webGLProgram():WebGLProgram{
 		return this._webGLProgram;
@@ -48,6 +54,10 @@ export abstract class GLDrawable{
 
 	get vertexBuffer():WebGLBuffer{
 		return this._vertexBuffer;
+	}
+
+	get elementBuffer():WebGLBuffer{
+		return this._elementBuffer;
 	}
 
 	get scale():Vector{
@@ -121,12 +131,21 @@ export abstract class GLDrawable{
 		//create vertex buffer object
 		this._vertexBuffer=GL.createBuffer();
 
-		//bind to array buffer (TODO later change to Elements array buffer)
+		//bind to array buffer 
 		GL.bindBuffer(GL.ARRAY_BUFFER,this.vertexBuffer);
 
 		//supply points of this drawable
 		let vertexData=this.vertexData();
 		GL.bufferData(GL.ARRAY_BUFFER,vertexData,GL.STATIC_DRAW);
+
+		//create a element buffer
+		this._elementBuffer=GL.createBuffer();
+
+		//bind to that element array buffer
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER,this.elementBuffer);
+
+		//supply indices for that vertex
+		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER,this.elementIndices(),GL.STATIC_DRAW);
 
 	} 
 

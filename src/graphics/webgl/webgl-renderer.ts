@@ -42,7 +42,7 @@ export class WebGLRenderer implements Renderer{
 
 	}
 
-	step(time:number):void{//=7 steps
+	step(time:number):void{//=6 steps
 
 		//alias to this.gl
 		let GL=this.gl;
@@ -60,13 +60,11 @@ export class WebGLRenderer implements Renderer{
 		GL.frontFace(GL.CCW);
 		GL.cullFace(GL.BACK);
 
-		//draw drawables
+		//draw each after setting up vertex shaders and fragment shaders
 		for(let drawable of this.drawableList){
 			drawable.drawSetup(GL,this.world.camera,this.world.lightList);
+			GL.drawElements(GL.TRIANGLES,drawable.vertexCount(),GL.UNSIGNED_SHORT,<number>drawable.elementBuffer);
 		}
-
-		//draw the triangles (in array buffer)
-		GL.drawArrays(GL.TRIANGLES,0,3);
 
 		//request another animation frame to play this in a loop
 		requestAnimationFrame(this.step.bind(this));
