@@ -23,20 +23,26 @@ export abstract class AnimationEffect implements Behavior{
 		this.duration=duration;
 		this.delay=delay;
 		this.loop=true;
+		this.countdown=this.delay;
+		this.goingForward=true;
+		this.elapsed=0;
 	}
 
 	start(){
-		this.countdown=this.delay;
-		this.goingForward=true;
+		//readily overridable by the subclasses if needed
 	}
 
 	update(dTime:number){
 		if (this.countdown <= 0) {
+
 			let fractionProgressed = this.valueAt(dTime);
-			let changeFraction = this.interpolation.interpolationAt(fractionProgressed);
-			let sign = this.goingForward ? 1 : -1;
-			let dValue = changeFraction * sign;
-			this.changeBy(dValue);
+			let changeFraction:number;
+			if(this.goingForward){
+				changeFraction = this.interpolation.interpolationAt(fractionProgressed);
+			}else{
+				changeFraction = 1 - this.reverseInterpolation.interpolationAt(fractionProgressed);
+			}
+			this.changeBy(changeFraction);
 		} else {
 			this.countdown -= dTime;
 		}
@@ -59,7 +65,8 @@ export abstract class AnimationEffect implements Behavior{
 
 	/**
 	 * Handles changes in property that affect the visual appearance of a drawable.
-	 * @param fraction amount (between 0 and 1) by which a given property changed
+	 * @param fraction amount (between 0 and 1) by which a given property changed 
+	 * from its very original value (at start)
 	 */
 	protected abstract changeBy(fraction:number);
 }

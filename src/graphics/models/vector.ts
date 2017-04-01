@@ -63,6 +63,13 @@ export class Vector{
 		return vector;
 	}
 
+	addScaler(scaler:number):Vector{
+		this.x+=scaler;
+		this.y+=scaler;
+		this.z+=scaler;
+		return this;
+	}
+
 	subtract(that:Vector):Vector{
 		return new Vector(this.x-that.x,this.y-that.y,this.z-that.z);
 	}

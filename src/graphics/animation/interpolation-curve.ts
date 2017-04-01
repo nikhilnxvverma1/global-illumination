@@ -8,32 +8,34 @@ export interface InterpolationCurve{
 	interpolationAt(timeFraction:number):number;
 }
 
-export class Linear implements InterpolationCurve{
-	interpolationAt(timeFraction:number):number{
+export class Linear implements InterpolationCurve {
+	interpolationAt(timeFraction: number): number {
 		return timeFraction;
 	}
 }
 
-export class EaseInQuadratic implements InterpolationCurve{
-	interpolationAt(timeFraction:number):number{
-		return timeFraction*timeFraction*timeFraction;//quadratic
+export class EaseInQuadratic implements InterpolationCurve {
+	interpolationAt(timeFraction: number): number {
+		return timeFraction * timeFraction * timeFraction;//quadratic
 	}
 }
 
-export class EaseOutQuadratic implements InterpolationCurve{
-	interpolationAt(timeFraction:number):number{
-		return 1-timeFraction*timeFraction*timeFraction;//quadratic
+export class EaseOutQuadratic implements InterpolationCurve {
+	interpolationAt(timeFraction: number): number {
+		let t = timeFraction - 1;
+		return 1 + t * t;//quadratic
 	}
 }
 
-export class EaseInCubic implements InterpolationCurve{
-	interpolationAt(timeFraction:number):number{
-		return timeFraction*timeFraction*timeFraction;//cubic
+export class EaseInCubic implements InterpolationCurve {
+	interpolationAt(timeFraction: number): number {
+		return timeFraction * timeFraction * timeFraction;//cubic
 	}
 }
 
-export class EaseOutCubic implements InterpolationCurve{
-	interpolationAt(timeFraction:number):number{
-		return 1-timeFraction*timeFraction*timeFraction;//cubic
+export class EaseOutCubic implements InterpolationCurve {
+	interpolationAt(timeFraction: number): number {
+		let t = timeFraction - 1;
+		return 1 + t * t * t;//cubic
 	}
 }

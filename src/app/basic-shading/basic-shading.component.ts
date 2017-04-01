@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild,ElementRef  } from '@angular/core';
 import { Renderer } from '../../graphics/renderer';
 import { PixelGridRenderer } from '../../graphics/pixel-grid-renderer';
-import { Engine } from '../../graphics/engine';
 import { PixelGrid } from '../../graphics/models/pixel-grid';
 import { Color } from '../../graphics/models/color';
 import { Camera } from '../../graphics/models/camera';

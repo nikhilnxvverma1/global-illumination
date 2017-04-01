@@ -8,8 +8,8 @@ import { StandardFragmentShader } from './standard-fragment-shader';
 import { StandardVertexShader } from './standard-vertex-shader';
 import { CustomVertexDrawable } from './custom-vertex-drawable';
 import { Vector } from '../models/vector';
-import { InitAction,UpdateAction } from './lifecycle';
-import { Behavior } from './lifecycle';
+import { Behavior,InitAction,UpdateAction } from './lifecycle';
+import { ScaleDrawable } from '../animation/scale-drawable';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
@@ -25,12 +25,15 @@ export class WebGLRenderer implements Renderer{
 		this.projectLocation=projectLocaiton;
 	}
 
-	collectAllDrawables():GLDrawable[]{
+	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
 		let cube=new CustomVertexDrawable().cube();
-		cube.translation.z=-1.1;
-		cube.updateActions.push((dTime:number,drawable:GLDrawable,GL:WebGLRenderingContext)=>{
-
-		});
+		cube.translation.z=-1.2;
+		let oscillateScale=new ScaleDrawable(cube,0.5,400);
+		// cube.scale.z=1.4
+		oscillateScale.alongZ=false;
+		// oscillateScale.alongY=false;
+		// oscillateScale.alongX=false;
+		this.behaviors.push(oscillateScale);
 
 		return [cube];
 	}

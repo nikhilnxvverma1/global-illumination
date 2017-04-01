@@ -64,6 +64,13 @@ export class Point{
 		return vector.subtract(normal.scalerProduct(fraction));
 	}
 
+	addScaler(scaler:number):Point{
+		this.x+=scaler;
+		this.y+=scaler;
+		this.z+=scaler;
+		return this;
+	}
+
 	/**Returns a homogenous array equivalent */
 	asArray():number[]{
 		return [this.x,this.y,this.z,1];
