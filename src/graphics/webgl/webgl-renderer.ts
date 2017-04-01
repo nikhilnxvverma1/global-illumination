@@ -28,7 +28,7 @@ export class WebGLRenderer implements Renderer{
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
 		let cube=new CustomVertexDrawable().cube();
 		cube.translation.z=-1.2;
-		let oscillateScale=new ScaleDrawable(cube,0.5,400);
+		let oscillateScale=new ScaleDrawable(cube,0.5,3000);
 		// cube.scale.z=1.4
 		oscillateScale.alongZ=false;
 		// oscillateScale.alongY=false;

@@ -7,25 +7,30 @@ import { InterpolationCurve,EaseInCubic,EaseOutCubic } from './interpolation-cur
 export abstract class AnimationEffect implements Behavior{
 
 	loop:boolean;
+	/** For a loopy animation, this flag ensures interpolation occurs in both direction  */
+	yoyo:boolean;
 	duration:number;
 	delay:number;
 
 	/** Change in value as a function of time. Default is EaseInCubic */
 	interpolation:InterpolationCurve=new EaseInCubic();
-	/** For a loopy animation, backward change in value as a function of time. Default is EaseOutCubic */
+	/** For a loopy animation with yoyo, backward change in value as a function of time. Default is EaseOutCubic */
 	reverseInterpolation:InterpolationCurve=new EaseOutCubic();
 
 	private countdown:number;
 	private elapsed:number;
+	private hasFinished:boolean;
 	protected goingForward:boolean;
 
 	constructor(duration=400,delay=0){
 		this.duration=duration;
 		this.delay=delay;
-		this.loop=true;
 		this.countdown=this.delay;
 		this.goingForward=true;
 		this.elapsed=0;
+		this.loop=true;
+		this.yoyo=true;
+		this.hasFinished=false;
 	}
 
 	start(){
@@ -33,6 +38,10 @@ export abstract class AnimationEffect implements Behavior{
 	}
 
 	update(dTime:number){
+		if(this.hasFinished){
+			return ;
+		}
+
 		if (this.countdown <= 0) {
 
 			let fractionProgressed = this.valueAt(dTime);
@@ -53,8 +62,20 @@ export abstract class AnimationEffect implements Behavior{
 		if (this.elapsed + dTime < this.duration) {
 			this.elapsed += dTime;
 		} else {
-			//toggle direction of animation
-			this.goingForward = !this.goingForward;
+
+			//indicate the end of animation, 
+			if(!this.loop){
+
+				//so that no further updates are made to the drawable
+				this.hasFinished=true;
+				return 1;
+			}
+
+			//go back and forth between starting and ending value
+			if(this.yoyo){
+				//toggle direction of animation
+				this.goingForward = !this.goingForward;
+			}
 
 			//round back to 0, so next time it will go back to the first case
 			this.elapsed = (this.elapsed + dTime) % this.duration;
