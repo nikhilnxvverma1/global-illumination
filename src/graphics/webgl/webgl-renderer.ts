@@ -8,12 +8,14 @@ import { StandardFragmentShader } from './standard-fragment-shader';
 import { StandardVertexShader } from './standard-vertex-shader';
 import { CustomVertexDrawable } from './custom-vertex-drawable';
 import { Vector } from '../models/vector';
-import { InitAction,UpdateAction } from './behavior';
+import { InitAction,UpdateAction } from './lifecycle';
+import { Behavior } from './lifecycle';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
 	projectLocation:string
 	world:World;
+	behaviors:Behavior[]=[];
 	private lastTime;
 
 	private drawableList:GLDrawable[];//TODO temporary
@@ -27,7 +29,7 @@ export class WebGLRenderer implements Renderer{
 		let cube=new CustomVertexDrawable().cube();
 		cube.translation.z=-1.1;
 		cube.updateActions.push((dTime:number,drawable:GLDrawable,GL:WebGLRenderingContext)=>{
-			
+
 		});
 
 		return [cube];
@@ -41,6 +43,11 @@ export class WebGLRenderer implements Renderer{
 		//all the drawables in a list
 		this.drawableList=this.collectAllDrawables();
 
+		//initialize all behviors
+		for(let behvior of this.behaviors){
+			behvior.start();
+		}
+
 		//initialize drawables
 		for(let drawable of this.drawableList){
 			drawable.init(GL);
@@ -52,10 +59,15 @@ export class WebGLRenderer implements Renderer{
 
 	}
 
-	step(time:number):void{//=7 steps
+	step(time:number):void{//=8 steps
 
 		//delta time
 		let dTime = this.computeDeltaTime(time);
+
+		//update all behviors, before starting any rendering
+		for(let behvior of this.behaviors){
+			behvior.update(dTime);
+		}
 
 		//alias to this.gl
 		let GL=this.gl;

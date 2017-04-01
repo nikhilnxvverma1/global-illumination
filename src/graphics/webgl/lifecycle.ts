@@ -1,14 +1,11 @@
 import { GLDrawable } from './gl-drawable';
 
 /** 
- * Objects that listen to the lifecycle events of a drawable.
- * Internally they are init and update actions that are attached 
- * to the drawable but these objects are also binded so as to enable 
- * the use of 'this' in the function  handlers
+ * Objects that listen to the lifecycle events during a start ad render loop stages.
  */
 export interface Behavior{
-	initAction:InitAction;
-	updateAction:UpdateAction;
+	start();
+	update(dTime:number);
 }
 
 /** Action to perform at the initialization of a drawable. Use bind to enable using 'this' inside an implementing object */
@@ -21,12 +18,7 @@ export interface UpdateAction{
 	(dTime:number,drawable:GLDrawable,GL:WebGLRenderingContext);
 }
 
-export class ScaleUpAndDown implements Behavior{
-	initAction(drawable:GLDrawable,GL:WebGLRenderingContext){
-
-	}
-
-	updateAction(dTime:number,drawable:GLDrawable,GL:WebGLRenderingContext){
-		
-	}
+/** Listens to lifecycle events of a drawable */
+export interface DrawableBehavior extends Behavior{
+	drawable:GLDrawable;
 }

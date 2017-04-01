@@ -4,7 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
 import { Renderer } from '../../graphics/renderer';
 import { WebGLRenderer } from '../../graphics/webgl/webgl-renderer';
-import { Engine } from '../../graphics/engine';
 import { PixelGrid } from '../../graphics/models/pixel-grid';
 import { Color } from '../../graphics/models/color';
 import { Camera } from '../../graphics/models/camera';

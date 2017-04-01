@@ -6,7 +6,7 @@ import { Vector } from '../models/vector';
 import { Point } from '../models/point';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
-import { Behavior,InitAction,UpdateAction } from './behavior';
+import { DrawableBehavior,InitAction,UpdateAction } from './lifecycle';
 import { removeFromList } from '../../util';
 
 export abstract class GLDrawable{
@@ -24,7 +24,7 @@ export abstract class GLDrawable{
 	private _initActions:InitAction[]=[];
 	private _updateActions:UpdateAction[]=[];
 
-	private behaviorList:Behavior[]=[];
+	private behaviorList:DrawableBehavior[]=[];
 
 	constructor(){
 
@@ -112,6 +112,11 @@ export abstract class GLDrawable{
 			for(let initAction of this.initActions){
 				initAction(this,GL);
 			}
+
+			//run start of each behavior
+			for(let behavior of this.behaviorList){
+				behavior.start();
+			}
 		}
 
 
@@ -187,22 +192,18 @@ export abstract class GLDrawable{
 		for(let updateAction of this.updateActions){
 			updateAction(dTime,this,GL);
 		}
+
+		//run update on each behavior
+		for(let behavior of this.behaviorList){
+			behavior.update(dTime);
+		}
 	}
 
-	addBehavior(behavior:Behavior){//=2 steps
-
-		//attach function handlers of this behavior(and bind to this object)
-		this.initActions.push(behavior.initAction.bind(behavior));
-		this.updateActions.push(behavior.updateAction.bind(behavior));
-
-		//keep track of this behavior by adding to list
+	addBehavior(behavior:DrawableBehavior){//=1 steps
 		this.behaviorList.push(behavior);
 	}
 
-	removeBehavior(behavior:Behavior){//=3 steps
-		removeFromList(behavior.initAction,this.initActions);
-		removeFromList(behavior.updateAction,this.updateActions);
+	removeBehavior(behavior:DrawableBehavior){//=1 steps
 		removeFromList(behavior,this.behaviorList);
-
 	}
 }
