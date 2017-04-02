@@ -15,14 +15,16 @@ precision mediump float;
 attribute vec3 position;
 attribute vec3 normal;
 attribute vec2 texCoord;
-uniform mat4 compositeMatrix;
+uniform mat4 normalMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
 void main(){
 
 	// if you don't use these vectors, you can't get their location in the application code
-	vec3 n=normal;
 	vec2 t=texCoord;
-
-	gl_Position=compositeMatrix * vec4(position,1.0);
+	
+	vec4 transformedNormal = normalMatrix * vec4(normal,1);
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
 }
 `
 ;
@@ -65,11 +67,11 @@ export class StandardVertexShader extends VertexShader{
 
 		//model transformation to world space
 		let worldMatrix=mat4.create();
-		mat4.scale(worldMatrix,worldMatrix,glDrawable.scale.asArray());
-		// util.setDiagonal(worldMatrix,glDrawable.scale);
 		mat4.rotateX(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.x));
 		mat4.rotateY(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.y));
 		mat4.rotateZ(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.z));
+		mat4.scale(worldMatrix,worldMatrix,glDrawable.scale.asArray());
+		// util.setDiagonal(worldMatrix,glDrawable.scale);
 		mat4.translate(worldMatrix,worldMatrix,glDrawable.translation.asArray());
 
 		//view matrix
@@ -82,14 +84,22 @@ export class StandardVertexShader extends VertexShader{
 		mat4.frustum(projectionMatrix,camera.left,camera.right,camera.bottom,camera.top,camera.near,camera.far);//uses traditional formula
 
 		//composite matrix
-		let compositeMatrix=mat4.create();
-		mat4.multiply(compositeMatrix,viewMatrix,worldMatrix);
-		mat4.multiply(compositeMatrix,projectionMatrix,compositeMatrix);
-		// mat4.multiply(compositeMatrix,projectionMatrix,viewMatrix);
+		let modelViewMatrix=mat4.create();
+		mat4.multiply(modelViewMatrix,viewMatrix,worldMatrix);
 
-		//send it down to the shader
-		let compositeMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"compositeMatrix");
-		GL.uniformMatrix4fv(compositeMatrixLocation,false,compositeMatrix);
+		//normal matrix
+		let normalMatrix=mat4.create();
+		mat4.invert(normalMatrix,modelViewMatrix);
+
+		//send down these three matrices
+		let modelViewMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"modelViewMatrix");
+		GL.uniformMatrix4fv(modelViewMatrixLocation,false,modelViewMatrix);
+
+		let projectionMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"projectionMatrix");
+		GL.uniformMatrix4fv(projectionMatrixLocation,false,projectionMatrix);
+
+		let normalMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"normalMatrix");
+		GL.uniformMatrix4fv(normalMatrixLocation,false,normalMatrix);
 	}
 
 }
