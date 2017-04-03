@@ -6,6 +6,7 @@ import { Light } from '../models/light';
 /** Raw shader code in string  */
 let code=
 `
+uniform 
 void main(){
 	gl_FragColor=vec4(0.4,0.3,0.8,1);
 }

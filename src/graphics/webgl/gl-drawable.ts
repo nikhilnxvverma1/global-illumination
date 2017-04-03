@@ -6,6 +6,7 @@ import { Vector } from '../models/vector';
 import { Point } from '../models/point';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
+import { Material } from '../models/material';
 import { DrawableBehavior,InitAction,UpdateAction } from './lifecycle';
 import { removeFromList } from '../../util';
 
@@ -13,6 +14,8 @@ export abstract class GLDrawable{
 	private _scale:Vector;
 	private _rotation:Vector;
 	private _translation:Point;
+
+	private _material:Material;
 
 	private _webGLProgram:WebGLProgram;
 	private _vertexBuffer:WebGLBuffer;
@@ -36,6 +39,9 @@ export abstract class GLDrawable{
 		this.scale=new Vector(1,1,1);
 		this.rotation=new Vector(0,0,0);
 		this.translation=new Point(0,0,0);
+
+		//default material
+		this.material=new Material();
 
 	}
 
@@ -89,6 +95,14 @@ export abstract class GLDrawable{
 
 	set translation(v:Point){
 		this._translation=v;
+	}
+
+	get material():Material{
+		return this._material;
+	}
+
+	set material(v:Material){
+		this._material=v;
 	}
 
 	get initActions():InitAction[]{

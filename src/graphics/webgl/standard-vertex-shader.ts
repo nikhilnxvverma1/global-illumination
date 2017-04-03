@@ -38,11 +38,13 @@ export class StandardVertexShader extends VertexShader{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){//=5 steps
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){
 
-		//composite matrix
-		this.buildAndSendCompositeMatrix(GL,glDrawable,camera);
+		this.sendDownUniformData(GL,glDrawable,camera);
+		this.sendDownPerVertexData(GL,glDrawable);
+	}
 
+	protected sendDownPerVertexData(GL:WebGLRenderingContext,glDrawable:GLDrawable){
 		//8 floats per vertex
 		let stride = 8 * FLOAT_SIZE;
 
@@ -60,10 +62,9 @@ export class StandardVertexShader extends VertexShader{
 		let texCoordLocation = GL.getAttribLocation(glDrawable.webGLProgram, "texCoord");
 		GL.enableVertexAttribArray(texCoordLocation);
 		GL.vertexAttribPointer(texCoordLocation, 2, GL.FLOAT, false, stride, 6 * FLOAT_SIZE);//final 2 floats after first 6 floats
-
 	}
 
-	buildAndSendCompositeMatrix(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera){//=5 steps
+	protected sendDownUniformData(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera){
 
 		//model transformation to world space
 		let worldMatrix=mat4.create();
@@ -78,28 +79,25 @@ export class StandardVertexShader extends VertexShader{
 		let viewMatrix=mat4.create();
 		mat4.lookAt(viewMatrix,camera.origin.asVec3(),camera.lookAt.asVec3(),camera.up.asVec3());
 
-		//perspective
-		let projectionMatrix=mat4.create();
-		// mat4.perspective(projectionMatrix, camera.fieldOfViewInRadians(),camera.aspectRatio(),0.1,100);//doesn't work
-		mat4.frustum(projectionMatrix,camera.left,camera.right,camera.bottom,camera.top,camera.near,camera.far);//uses traditional formula
-
-		//composite matrix
+		//model view matrix
 		let modelViewMatrix=mat4.create();
 		mat4.multiply(modelViewMatrix,viewMatrix,worldMatrix);
+		let modelViewMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"modelViewMatrix");
+		GL.uniformMatrix4fv(modelViewMatrixLocation,false,modelViewMatrix);
 
 		//normal matrix
 		let normalMatrix=mat4.create();
 		mat4.invert(normalMatrix,modelViewMatrix);
-
-		//send down these three matrices
-		let modelViewMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"modelViewMatrix");
-		GL.uniformMatrix4fv(modelViewMatrixLocation,false,modelViewMatrix);
-
-		let projectionMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"projectionMatrix");
-		GL.uniformMatrix4fv(projectionMatrixLocation,false,projectionMatrix);
-
+		mat4.transpose(normalMatrix,normalMatrix);
 		let normalMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"normalMatrix");
 		GL.uniformMatrix4fv(normalMatrixLocation,false,normalMatrix);
+
+		//projection matrix
+		let projectionMatrix=mat4.create();
+		// mat4.perspective(projectionMatrix, camera.fieldOfViewInRadians(),camera.aspectRatio(),0.1,100);//doesn't work
+		mat4.frustum(projectionMatrix,camera.left,camera.right,camera.bottom,camera.top,camera.near,camera.far);//uses traditional formula
+		let projectionMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"projectionMatrix");
+		GL.uniformMatrix4fv(projectionMatrixLocation,false,projectionMatrix);
 	}
 
 }
