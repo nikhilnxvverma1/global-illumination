@@ -3,8 +3,8 @@ import { VertexShader } from './shader';
 import { loadTextResource } from '../../file-util';
 import * as Promise from 'bluebird';
 import * as path from 'path';
+import { World } from '../models/world';
 import { Camera } from '../models/camera';
-import { Light } from '../models/light';
 import { mat4 } from 'gl-matrix';
 import * as util from '../../util';
 
@@ -38,9 +38,9 @@ export class StandardVertexShader extends VertexShader{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World){
 
-		this.sendDownUniformData(GL,glDrawable,camera);
+		this.sendDownUniformData(GL,glDrawable,world.camera);
 		this.sendDownPerVertexData(GL,glDrawable);
 	}
 

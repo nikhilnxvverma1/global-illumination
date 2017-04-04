@@ -8,7 +8,7 @@ export class Material{
 	kd:number;
 	/** Specular Coefficient */
 	ks:number;
-	/** Exponential component of specular hightlight */
+	/** Shininess constant for specular hightlight. Large for surfaces that are smoother and more mirror like */
 	ke:number;
 	/** Weather to use the same color for the entire object */
 	useFixedColor:boolean;

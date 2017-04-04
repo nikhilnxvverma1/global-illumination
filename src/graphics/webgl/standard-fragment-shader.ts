@@ -2,16 +2,26 @@ import { GLDrawable } from './gl-drawable';
 import { FragmentShader } from './shader';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
+import { World } from '../models/world';
 
 /** Raw shader code in string  */
 let code=
 `
 precision mediump float;
+
+#define MAX_LIGHTS 12
+
+struct Light{
+	vec3 position;
+	
+}
+
 uniform float ka;
 uniform float kd;
 uniform float ks;
 uniform float ke;
 uniform vec4 fixedColor;
+uniform vec4 ambientLight;
 void main(){
 	gl_FragColor=fixedColor;
 }
@@ -26,12 +36,13 @@ export class StandardFragmentShader extends FragmentShader{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,camera:Camera,lights:Light[]){
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World){
 
-		this.sendDownMaterialInformation(GL,glDrawable);
+		this.sendDownMaterialInfo(GL,glDrawable);
+		this.sendDownLightInfo(GL,glDrawable,world);
 	}
 
-	private sendDownMaterialInformation(GL:WebGLRenderingContext,glDrawable:GLDrawable){
+	private sendDownMaterialInfo(GL:WebGLRenderingContext,glDrawable:GLDrawable){
 		
 		//material light coefficients
 		let kaLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ka");
@@ -49,6 +60,26 @@ export class StandardFragmentShader extends FragmentShader{
 		//material color
 		let fixedColorLocation=GL.getUniformLocation(glDrawable.webGLProgram,"fixedColor");
 		GL.uniform4fv(fixedColorLocation,glDrawable.material.fixedColor.toFractionalValues().asArray());
+	}
+
+	private sendDownLightInfo(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World){
+	
+		//ambient light
+		let ambientLightLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ambientLight");
+		GL.uniform4fv(ambientLightLocation,world.ambientLight.toFractionalValues().asArray());
+	}
+
+	private flattenedArrayForAttributeOfLights(lights:Light[],attributeAsArray:(light:Light)=>number[]):number[]{
+
+		let flattenedArray=[];
+		for(let light of lights){
+			let array=attributeAsArray(light);
+			
+			for(let element of array){
+				flattenedArray.push(element);
+			}
+		}
+		return flattenedArray;
 	}
 
 }

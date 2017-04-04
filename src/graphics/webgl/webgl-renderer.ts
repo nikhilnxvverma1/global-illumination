@@ -93,8 +93,8 @@ export class WebGLRenderer implements Renderer{
 
 		//draw each after setting up vertex shaders and fragment shaders
 		for(let drawable of this.drawableList){
-			drawable.drawSetup(GL,this.world.camera,this.world.lightList,dTime);
-			GL.drawElements(GL.TRIANGLES,drawable.vertexCount(),GL.UNSIGNED_SHORT,<number>drawable.elementBuffer);
+			drawable.drawSetup(GL, this.world, dTime);
+			GL.drawElements(GL.TRIANGLES, drawable.vertexCount(), GL.UNSIGNED_SHORT, <number>drawable.elementBuffer);
 		}
 
 		//request another animation frame to play this in a loop
