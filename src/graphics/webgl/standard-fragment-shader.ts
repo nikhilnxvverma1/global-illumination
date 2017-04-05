@@ -3,6 +3,7 @@ import { FragmentShader } from './shader';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
 import { World } from '../models/world';
+import { removeFromEnd } from '../../util';
 
 /** Raw shader code in string  */
 let code=
@@ -13,9 +14,10 @@ precision mediump float;
 
 struct Light{
 	vec3 position;
-	
-}
+	vec4 color;
+};
 
+uniform Light lightList[MAX_LIGHTS];
 uniform float ka;
 uniform float kd;
 uniform float ks;
@@ -23,7 +25,7 @@ uniform float ke;
 uniform vec4 fixedColor;
 uniform vec4 ambientLight;
 void main(){
-	gl_FragColor=fixedColor;
+	gl_FragColor=lightList[0].color;
 }
 `
 ;
@@ -67,6 +69,19 @@ export class StandardFragmentShader extends FragmentShader{
 		//ambient light
 		let ambientLightLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ambientLight");
 		GL.uniform4fv(ambientLightLocation,world.ambientLight.toFractionalValues().asArray());
+
+		//lights in the world
+		for(let i=0;i<world.lightList.length;i++){
+
+			//position
+			let lightPositionLocation=GL.getUniformLocation(glDrawable.webGLProgram,`lightList[${i}].position`);
+			let xyz=world.lightList[i].position.asArrayNonHomogenous();
+			GL.uniform3fv(lightPositionLocation,xyz);
+
+			//color
+			let lightColorLocation=GL.getUniformLocation(glDrawable.webGLProgram,`lightList[${i}].color`);
+			GL.uniform4fv(lightColorLocation,world.lightList[i].color.toFractionalValues().asArray());
+		}
 	}
 
 	private flattenedArrayForAttributeOfLights(lights:Light[],attributeAsArray:(light:Light)=>number[]):number[]{

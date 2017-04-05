@@ -88,4 +88,8 @@ export class Vector{
 		return vec3.fromValues(this.x,this.y,this.z);
 	}
 
+	asArrayNonHomogenous(){
+		return [this.x,this.y,this.z];
+	}
+
 }

@@ -85,4 +85,9 @@ export class Point{
 	subtract(that:Point):Point{
 		return new Point(this.x-that.x,this.y-that.y,this.z-that.z);
 	}
+
+	asArrayNonHomogenous(){
+		return [this.x,this.y,this.z];
+	}
+
 }

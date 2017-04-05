@@ -76,6 +76,11 @@ export class WebglTestingComponent implements OnInit {
 		world.geometryList=geometryList;
 		world.camera=this.makeDefaultCamera();
 
+		//MAKE a light and SUPPLY that as well
+		let light1=new Light(new Point(5,20,-5));
+		light1.color.set("#FFFF36");
+		world.lightList.push(light1);
+
 		return world;
 	}
 
@@ -113,6 +118,7 @@ export class WebglTestingComponent implements OnInit {
 
 		//MAKE a light and SUPPLY that as well
 		let light1=new Light(new Point(5,20,-5));
+		light1.color.set("#FFFF36");
 		world.lightList.push(light1);
 
 		return world;

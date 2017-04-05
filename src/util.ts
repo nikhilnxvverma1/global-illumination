@@ -30,3 +30,13 @@ export function setDiagonal(mat:mat4,diagonal:Vector){
 	mat[10]=diagonal.z;
 	mat[15]=1;
 }
+
+export function removeFromEnd(array:any[],howMany:number):any[]{
+	let newLength=array.length-howMany;	
+	let shorterArray:any=[];
+	for(let i=0;i<newLength;i++){
+		shorterArray.push(array[i]);
+	}
+
+	return shorterArray;
+}
