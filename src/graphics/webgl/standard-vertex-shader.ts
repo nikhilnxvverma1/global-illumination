@@ -18,6 +18,9 @@ attribute vec2 texCoord;
 uniform mat4 normalMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
+
+varying vec3 interpolatedNormal;
+varying vec3 interpolatedEye;
 void main(){
 
 	// if you don't use these vectors, you can't get their location in the application code
