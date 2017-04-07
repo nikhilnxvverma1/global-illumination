@@ -81,6 +81,11 @@ export class WebglTestingComponent implements OnInit {
 		light1.color.set("#FFFF36");
 		world.lightList.push(light1);
 
+		let light2=new Light(new Point(15,10,-2));
+		light2.color.set("#DE72A4");
+		world.lightList.push(light2);
+
+
 		return world;
 	}
 

@@ -19,15 +19,17 @@ uniform mat4 normalMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
-varying vec3 interpolatedNormal;
-varying vec3 interpolatedEye;
+varying vec3 interpolatedNormal;//in model view space
+varying vec3 vertexPosition;//without the prespective transform
+varying vec3 diffuseColor;
 void main(){
 
 	// if you don't use these vectors, you can't get their location in the application code
 	vec2 t=texCoord;
 	
-	vec4 transformedNormal = normalMatrix * vec4(normal,1);
+	interpolatedNormal = vec3(normalMatrix * vec4(normal,0));
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+	diffuseColor=vec3(0.77, 0.37, 0.61);//TODO use tex coords or material's fixed color
 }
 `
 ;

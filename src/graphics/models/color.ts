@@ -1,3 +1,4 @@
+import { vec3 } from 'gl-matrix';
 
 /**
  * Color in RGBA format with ranges between 0-255
@@ -103,6 +104,10 @@ export class Color {
 
 	asArray():number[]{
 		return [this.r,this.g,this.b,this.a];
+	}
+
+	asVec3():vec3{
+		return vec3.fromValues(this.r,this.g,this.b);
 	}
 
 }

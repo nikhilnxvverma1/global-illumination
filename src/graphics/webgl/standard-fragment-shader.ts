@@ -12,20 +12,52 @@ precision mediump float;
 
 #define MAX_LIGHTS 12
 
+varying vec3 interpolatedNormal;
+varying vec3 vertexPosition;
+varying vec3 diffuseColor;
+
 struct Light{
 	vec3 position;
-	vec4 color;
+	vec3 color;
 };
-
 uniform Light lightList[MAX_LIGHTS];
+uniform int totalLights;
+uniform vec4 ambientLight;
+
+uniform vec3 cameraPosition;
 uniform float ka;
 uniform float kd;
 uniform float ks;
 uniform float ke;
-uniform vec4 fixedColor;
-uniform vec4 ambientLight;
 void main(){
-	gl_FragColor=lightList[0].color;
+
+	vec3 ambient=vec3( ka * ambientLight);
+	vec3 diffuse;
+	vec3 specular;
+
+	vec3 N = normalize(interpolatedNormal);
+	vec3 V = normalize(vertexPosition-cameraPosition);
+
+	//compute diffuse and specular component from each light
+	for(int i=0; i<MAX_LIGHTS; i++){
+
+		//unfortunately, GLSL does not support variable upper limits
+		if(i>=totalLights){
+			break;
+		}
+
+		vec3 L = normalize(lightList[i].position-vertexPosition);
+		vec3 R = reflect(-L,N); // L was already inverted, so to have reflected ray also point outwards, L had to be negated
+
+		float lambertian = max(dot(N,L),0.0);
+		diffuse += lambertian * diffuseColor;
+
+		specular += pow( max(dot(R,V),0.0), ke ) * lightList[i].color;
+
+	}
+
+	// gl_FragColor=lightList[1].color;
+	gl_FragColor=vec4(ambient + kd * diffuse + ks * specular,1);
 }
 `
 ;
@@ -66,9 +98,17 @@ export class StandardFragmentShader extends FragmentShader{
 
 	private sendDownLightInfo(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World){
 	
+		//camera position
+		let cameraPositionLocation=GL.getUniformLocation(glDrawable.webGLProgram,"cameraPosition");
+		GL.uniform3fv(cameraPositionLocation,world.camera.origin.asVec3());
+
 		//ambient light
 		let ambientLightLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ambientLight");
 		GL.uniform4fv(ambientLightLocation,world.ambientLight.toFractionalValues().asArray());
+
+		//number of lights in scene
+		let totalLightsLocation=GL.getUniformLocation(glDrawable.webGLProgram,"totalLights");
+		GL.uniform1i(totalLightsLocation,world.lightList.length);
 
 		//lights in the world
 		for(let i=0;i<world.lightList.length;i++){
@@ -80,7 +120,7 @@ export class StandardFragmentShader extends FragmentShader{
 
 			//color
 			let lightColorLocation=GL.getUniformLocation(glDrawable.webGLProgram,`lightList[${i}].color`);
-			GL.uniform4fv(lightColorLocation,world.lightList[i].color.toFractionalValues().asArray());
+			GL.uniform3fv(lightColorLocation,world.lightList[i].color.toFractionalValues().asVec3());
 		}
 	}
 
