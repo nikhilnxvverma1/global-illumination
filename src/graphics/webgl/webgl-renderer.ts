@@ -30,8 +30,7 @@ export class WebGLRenderer implements Renderer{
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
 		let cube=new CustomVertexDrawable().cube();
 		cube.translation.z=-1.1;
-		// cube.rotation.y=90;
-		let animationEffect=new TranslateDrawable(cube,9,400);
+		let animationEffect=new TranslateDrawable(cube,9,4000);
 		// animationEffect.yoyo=false;
 		animationEffect.alongZ=false;
 		animationEffect.alongY=false;

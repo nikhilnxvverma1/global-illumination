@@ -33,13 +33,14 @@ export class WebglTestingComponent implements OnInit {
 	) { }
 
 	ngOnInit() {//=2 units
+		this.initializeRenderer();
 		//base location for dist build (TODO remove as it is unneeded)
-		this.retrieveBaseLocation().subscribe((baseLocation:string)=>{
-			this.clientBaseLocation=baseLocation;
+		// this.retrieveBaseLocation().subscribe((baseLocation:string)=>{
+		// 	this.clientBaseLocation=baseLocation;
 
-			//renderer setup
-			this.initializeRenderer();
-		});
+		// 	//renderer setup
+		// 	this.initializeRenderer();
+		// });
 	}
 
 	private initializeRenderer() { //=4 units
@@ -77,13 +78,13 @@ export class WebglTestingComponent implements OnInit {
 		world.camera=this.makeDefaultCamera();
 
 		//MAKE a light and SUPPLY that as well
-		let light1=new Light(new Point(5,20,-5));
+		let light1=new Light(new Point(0,2,5));
 		light1.color.set("#FFFF36");
 		world.lightList.push(light1);
 
 		let light2=new Light(new Point(15,10,-2));
 		light2.color.set("#DE72A4");
-		world.lightList.push(light2);
+		// world.lightList.push(light2);
 
 
 		return world;

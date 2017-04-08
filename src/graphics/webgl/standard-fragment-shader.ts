@@ -49,15 +49,15 @@ void main(){
 		vec3 L = normalize(lightList[i].position-vertexPosition);
 		vec3 R = reflect(-L,N); // L was already inverted, so to have reflected ray also point outwards, L had to be negated
 
-		float lambertian = max(dot(N,L),0.0);
+		float lambertian = max(dot(N,L),0.0); 
 		diffuse += lambertian * diffuseColor;
 
 		specular += pow( max(dot(R,V),0.0), ke ) * lightList[i].color;
 
 	}
 
-	// gl_FragColor=lightList[1].color;
 	gl_FragColor=vec4(ambient + kd * diffuse + ks * specular,1);
+	// gl_FragColor=vec4( specular,1);
 }
 `
 ;
@@ -83,13 +83,13 @@ export class StandardFragmentShader extends FragmentShader{
 		GL.uniform1f(kaLocation,glDrawable.material.ka);
 
 		let kdLocation=GL.getUniformLocation(glDrawable.webGLProgram,"kd");
-		GL.uniform1f(kaLocation,glDrawable.material.kd);
+		GL.uniform1f(kdLocation,glDrawable.material.kd);
 
 		let ksLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ks");
-		GL.uniform1f(kaLocation,glDrawable.material.ks);
+		GL.uniform1f(ksLocation,glDrawable.material.ks);
 
 		let keLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ke");
-		GL.uniform1f(kaLocation,glDrawable.material.ke);
+		GL.uniform1f(keLocation,glDrawable.material.ke);
 
 		//material color
 		let fixedColorLocation=GL.getUniformLocation(glDrawable.webGLProgram,"fixedColor");

@@ -27,8 +27,9 @@ void main(){
 	// if you don't use these vectors, you can't get their location in the application code
 	vec2 t=texCoord;
 	
-	interpolatedNormal = vec3(normalMatrix * vec4(normal,0));
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+	interpolatedNormal = vec3(normalMatrix * vec4(normal,0));
+	vertexPosition = vec3(modelViewMatrix * vec4(position,1.0));
 	diffuseColor=vec3(0.77, 0.37, 0.61);//TODO use tex coords or material's fixed color
 }
 `
