@@ -1,4 +1,8 @@
 import { GLDrawable } from './gl-drawable';
+import { toRadians } from '../../util';
+import { Point } from '../models/point';
+import { Vector } from '../models/vector';
+
 
 export class CustomVertexDrawable extends GLDrawable{
 	count:number;
@@ -7,6 +11,18 @@ export class CustomVertexDrawable extends GLDrawable{
 
 	constructor(){
 		super();
+	}
+
+	vertexCount():number{
+		return this.count;
+	}
+
+	vertexData():Float32Array{
+		return new Float32Array(this.vertices);
+	}
+
+	elementIndices():Uint16Array{
+		return new Uint16Array(this.elements);
 	}
 
 	triangle():CustomVertexDrawable{//=3 steps
@@ -26,47 +42,50 @@ export class CustomVertexDrawable extends GLDrawable{
 		return this;
 	}
 
-	cube():CustomVertexDrawable{//=3 steps
+	cube(side=2):CustomVertexDrawable{//=3 steps
 		this.count=24;
+
+		//half side
+		let h=side/2;
 
 		//vertex : position(3) + normal(3) + tex coords(2)
 		//TODO tex coords are currently dummy
 		this.vertices = [
 			// Front face
-			-1.0, -1.0,  1.0, 0,0,1,0,0,
-			1.0, -1.0,  1.0, 0,0,1,0,0,
-			1.0,  1.0,  1.0, 0,0,1,0,0,
-			-1.0,  1.0,  1.0, 0,0,1,0,0,
+			-h, -h,  h, 0,0,1,0,0,
+			h, -h,  h, 0,0,1,0,0,
+			h,  h,  h, 0,0,1,0,0,
+			-h,  h,  h, 0,0,1,0,0,
 			
 			// Back face
-			-1.0, -1.0, -1.0, 0,0,-1,0,0,
-			-1.0,  1.0, -1.0, 0,0,-1,0,0,
-			1.0,  1.0, -1.0, 0,0,-1,0,0,
-			1.0, -1.0, -1.0, 0,0,-1,0,0,
+			-h, -h, -h, 0,0,-1,0,0,
+			-h,  h, -h, 0,0,-1,0,0,
+			h,  h, -h, 0,0,-1,0,0,
+			h, -h, -h, 0,0,-1,0,0,
 			
 			// Top face
-			-1.0,  1.0, -1.0, 0,1,0,0,0,
-			-1.0,  1.0,  1.0, 0,1,0,0,0,
-			1.0,  1.0,  1.0, 0,1,0,0,0,
-			1.0,  1.0, -1.0, 0,1,0,0,0,
+			-h,  h, -h, 0,1,0,0,0,
+			-h,  h,  h, 0,1,0,0,0,
+			h,  h,  h, 0,1,0,0,0,
+			h,  h, -h, 0,1,0,0,0,
 			
 			// Bottom face
-			-1.0, -1.0, -1.0, 0,-1,0,0,0,
-			1.0, -1.0, -1.0, 0,-1,0,0,0,
-			1.0, -1.0,  1.0, 0,-1,0,0,0,
-			-1.0, -1.0,  1.0, 0,-1,0,0,0,
+			-h, -h, -h, 0,-1,0,0,0,
+			h, -h, -h, 0,-1,0,0,0,
+			h, -h,  h, 0,-1,0,0,0,
+			-h, -h,  h, 0,-1,0,0,0,
 			
 			// Right face
-			1.0, -1.0, -1.0, 1,0,0,0,0,
-			1.0,  1.0, -1.0, 1,0,0,0,0,
-			1.0,  1.0,  1.0, 1,0,0,0,0,
-			1.0, -1.0,  1.0, 1,0,0,0,0,
+			h, -h, -h, 1,0,0,0,0,
+			h,  h, -h, 1,0,0,0,0,
+			h,  h,  h, 1,0,0,0,0,
+			h, -h,  h, 1,0,0,0,0,
 			
 			// Left face
-			-1.0, -1.0, -1.0, -1,0,0,0,0,
-			-1.0, -1.0,  1.0, -1,0,0,0,0,
-			-1.0,  1.0,  1.0, -1,0,0,0,0,
-			-1.0,  1.0, -1.0, -1,0,0,0,0
+			-h, -h, -h, -1,0,0,0,0,
+			-h, -h,  h, -1,0,0,0,0,
+			-h,  h,  h, -1,0,0,0,0,
+			-h,  h, -h, -1,0,0,0,0
 		];
 
 		this.elements= [
@@ -81,15 +100,122 @@ export class CustomVertexDrawable extends GLDrawable{
 		return this;
 	}
 
-	vertexCount():number{
-		return this.count;
+
+	sphere(diameter:number=2):CustomVertexDrawable{
+		let radius=diameter/2;
+		let center=new Point(0,0,0);
+
+		// IMP: these steps must divide 180 evenly
+		let vStep=5;
+		let hStep=5;
+
+		const verticesInACircle = 360 / hStep;
+		const verticesInSphere = 1 + (180 / vStep - 2 + 1) * verticesInACircle + 1;
+		this.count=verticesInSphere;
+
+		let verticesSoFar=0;
+		this.vertices=[];
+		this.elements=[];
+
+		//vertical down (top to bottom in y)
+		for (let i = 0; i <= 180; i += vStep) {
+
+			let y = radius * Math.sin(toRadians(90 - i));
+			if(i==0){
+
+				let pointOnSphere = new Point(0, y, 0);
+				let normalOnPoint = Vector.between(center,pointOnSphere);
+				this.addVertex(pointOnSphere,normalOnPoint);
+				verticesSoFar++;
+				
+			}else if(i==180){
+
+
+				let pointOnSphere = new Point(0, y, 0);
+				let normalOnPoint = Vector.between(center,pointOnSphere);
+				this.addVertex(pointOnSphere,normalOnPoint);
+				verticesSoFar++;
+
+			}else{
+
+				const startingCircleElement = verticesSoFar;
+				//ring (circle in the xz plane)
+				for (let j = 0; j < 360; j += hStep) {
+
+					let x = radius * Math.cos(toRadians(i));
+					let z = radius * Math.sin(toRadians(i));
+
+					let pointOnSphere = new Point(x, y, z);
+					let normalOnPoint = Vector.between(center,pointOnSphere);
+					this.addVertex(pointOnSphere,normalOnPoint);
+					verticesSoFar++;
+
+					//element index for this vertex and the next(in possible future)
+					const thisElement = verticesSoFar - 1;
+					const nextElement = j == 360-hStep ? startingCircleElement : thisElement + 1;//wrap around for the last element
+
+					if (i - vStep == 0) {// previous height was the top polar point
+
+						//top polar point
+						const polarPointElement = 0;
+
+						//make a triangle using these 3 vertices (counter clockwise)
+						this.elements.push(thisElement);
+						this.elements.push(nextElement);
+						this.elements.push(polarPointElement);
+
+					}else if (i + vStep == 180) {// next height is the bottom polar point(last vertex)
+
+						//top polar point (will always be last)
+						const polarPointElement = verticesInSphere -1;
+
+						//make a triangle using these 3 vertices (counter clockwise)
+						this.elements.push(polarPointElement);
+						this.elements.push(nextElement);
+						this.elements.push(thisElement);
+					}
+					else{// previous height was a circle, connect to vertices of the circle of previous height
+
+						//corresponding vertex elements of previous height
+						const thisElementCorresponding = thisElement - verticesInACircle;
+						const nextElementCorresponding = nextElement - verticesInACircle;
+
+						//make a quad using these 4 vertices (counter clockwise)
+						this.elements.push(thisElement);
+						this.elements.push(nextElement);
+						this.elements.push(thisElementCorresponding);
+
+						this.elements.push(nextElement);
+						this.elements.push(nextElementCorresponding);
+						this.elements.push(thisElementCorresponding);
+					}
+				}
+			}
+		}
+		return this;
 	}
 
-	vertexData():Float32Array{
-		return new Float32Array(this.vertices);
-	}
+	/** Adds vertex data and returns the element index for this position */
+	protected addVertex(position:Point,normal:Vector,texCoords=new Point(0,0)):number{
 
-	elementIndices():Uint16Array{
-		return new Uint16Array(this.elements);
+		//only for first index return 0
+		let elementIndexForThisVertex = this.vertices.length == 0 ? 0 : this.vertices.length / 8 + 1;
+
+		//vertices
+		this.vertices.push(position.x);
+		this.vertices.push(position.y);
+		this.vertices.push(position.z);
+		
+		//normal
+		normal.normalize();
+		this.vertices.push(normal.x);
+		this.vertices.push(normal.y);
+		this.vertices.push(normal.z);
+
+		//texture coordinates
+		this.vertices.push(texCoords.x);
+		this.vertices.push(texCoords.y);
+
+		return elementIndexForThisVertex;
 	}
 }

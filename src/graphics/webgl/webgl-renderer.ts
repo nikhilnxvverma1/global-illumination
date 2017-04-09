@@ -28,16 +28,16 @@ export class WebGLRenderer implements Renderer{
 	}
 
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
-		let cube=new CustomVertexDrawable().cube();
-		cube.translation.z=-1.1;
-		let animationEffect=new TranslateDrawable(cube,9,4000);
+		let geometry=new CustomVertexDrawable().sphere();
+		geometry.translation.z=-1.1;
+		let animationEffect=new TranslateDrawable(geometry,9,4000);
 		// animationEffect.yoyo=false;
 		animationEffect.alongZ=false;
 		animationEffect.alongY=false;
 		animationEffect.alongX=true;
-		this.behaviors.push(animationEffect);
+		// this.behaviors.push(animationEffect);
 
-		return [cube];
+		return [geometry];
 	}
 
 	draw(){//=4 steps
