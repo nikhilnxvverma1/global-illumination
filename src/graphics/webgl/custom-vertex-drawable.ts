@@ -130,12 +130,14 @@ export class CustomVertexDrawable extends GLDrawable{
 
 			}else{
 
+				//disk (circle in the xz plane)
+				let armAngle = (90 - Math.abs(90 - i)) 
+				let diskRadius= Math.sin(toRadians(armAngle)) * radius;//the more you move away from center, the smaller the disk radius
 				const startingCircleElement = verticesSoFar;
-				//ring (circle in the xz plane)
 				for (let j = 0; j < 360; j += hStep) {
 
-					let x = radius * Math.cos(toRadians(i));
-					let z = radius * Math.sin(toRadians(i));
+					let x = diskRadius * Math.cos(toRadians(j));
+					let z = diskRadius * Math.sin(toRadians(j));
 
 					let pointOnSphere = new Point(x, y, z);
 					let normalOnPoint = Vector.between(center,pointOnSphere);
