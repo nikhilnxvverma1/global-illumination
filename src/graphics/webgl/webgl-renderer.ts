@@ -28,17 +28,17 @@ export class WebGLRenderer implements Renderer{
 	}
 
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
-		let geometry=new CustomVertexDrawable().cube(2);
-		// let geometry=new CustomVertexDrawable().sphere();
-		geometry.translation.z=-2.5;
-		// geometry.rotation.y=180;
-		// geometry.rotation.y=20;
+		// let geometry=new CustomVertexDrawable().cube(3);
+		let geometry=new CustomVertexDrawable().sphere();
+		geometry.translation.z=-3.5;
+		// geometry.rotation.y=45;
+		// geometry.rotation.z=90;
 		let animationEffect=new RotateDrawable(geometry,45,4000);
 		// animationEffect.yoyo=false;
 		animationEffect.alongZ=false;
 		animationEffect.alongY=true;
 		animationEffect.alongX=false;
-		// this.behaviors.push(animationEffect);
+		this.behaviors.push(animationEffect);
 
 		return [geometry];
 	}
@@ -96,7 +96,7 @@ export class WebGLRenderer implements Renderer{
 		//draw each after setting up vertex shaders and fragment shaders
 		for(let drawable of this.drawableList){
 			drawable.drawSetup(GL, this.world, dTime);
-			GL.drawElements(GL.TRIANGLES, drawable.vertexCount(), GL.UNSIGNED_SHORT, 0);
+			GL.drawElements(GL.TRIANGLES, drawable.elementIndices().length, GL.UNSIGNED_SHORT, 0);
 		}
 
 		//request another animation frame to play this in a loop

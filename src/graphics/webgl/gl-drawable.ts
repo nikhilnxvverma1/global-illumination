@@ -46,8 +46,6 @@ export abstract class GLDrawable{
 
 	}
 
-	abstract vertexCount():number;
-
 	/** Vertex data as an continous array of values. Must be Counter Clockwise */
 	abstract vertexData():Float32Array;
 

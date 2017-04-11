@@ -74,12 +74,12 @@ export class StandardVertexShader extends VertexShader{
 
 		//model transformation to world space
 		let worldMatrix=mat4.create();
-		mat4.rotateX(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.x));
-		mat4.rotateY(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.y));
-		mat4.rotateZ(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.z));
-		mat4.scale(worldMatrix,worldMatrix,glDrawable.scale.asArray());
-		// util.setDiagonal(worldMatrix,glDrawable.scale);
 		mat4.translate(worldMatrix,worldMatrix,glDrawable.translation.asArray());
+		mat4.scale(worldMatrix,worldMatrix,glDrawable.scale.asArray());
+		mat4.rotateZ(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.z));
+		mat4.rotateY(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.y));
+		mat4.rotateX(worldMatrix,worldMatrix,util.toRadians(glDrawable.rotation.x));
+		// util.setDiagonal(worldMatrix,glDrawable.scale);
 
 		//view matrix
 		let viewMatrix=mat4.create();

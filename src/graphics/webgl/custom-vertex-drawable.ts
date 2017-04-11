@@ -5,16 +5,11 @@ import { Vector } from '../models/vector';
 
 
 export class CustomVertexDrawable extends GLDrawable{
-	count:number;
 	vertices:number[];
 	elements:number[];
 
 	constructor(){
 		super();
-	}
-
-	vertexCount():number{
-		return this.count;
 	}
 
 	vertexData():Float32Array{
@@ -26,7 +21,6 @@ export class CustomVertexDrawable extends GLDrawable{
 	}
 
 	triangle():CustomVertexDrawable{//=3 steps
-		this.count=3;
 
 		//counter clockwise vertices
 		this.vertices=[
@@ -43,8 +37,6 @@ export class CustomVertexDrawable extends GLDrawable{
 	}
 
 	cube(side=2):CustomVertexDrawable{//=3 steps
-
-		this.count=24;
 
 		//half side
 		let h=side/2;
@@ -96,18 +88,7 @@ export class CustomVertexDrawable extends GLDrawable{
 			12, 13, 14,     12, 14, 15,   // bottom
 			16, 17, 18,     16, 18, 19,   // right
 			20, 21, 22,     20, 22, 23    // left
-			];
-
-		this.elements= [
-			0,  1,  2,      0,  2,  3,    // front
-			4,  5,  6,      4,  6,  7,    // back
-			8,  9,  10,     8,  10, 11,   // top
-			12, 13, 14,     12, 14, 15,   // bottom
-			16, 17, 18,     16, 18, 19,   // right
-			20, 21, 22,     20, 22, 23,    // left
 		];
-
-		this.count=3;
 
 		return this;
 	}
@@ -123,7 +104,6 @@ export class CustomVertexDrawable extends GLDrawable{
 
 		const verticesInACircle = 360 / hStep;
 		const verticesInSphere = 1 + (180 / vStep - 2 + 1) * verticesInACircle + 1;
-		this.count=verticesInSphere;
 
 		let verticesSoFar=0;
 		this.vertices=[];
