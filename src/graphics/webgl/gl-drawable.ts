@@ -194,8 +194,9 @@ export abstract class GLDrawable{
 		//use the shader program we setup earlier, 
 		GL.useProgram(this.webGLProgram);
 
-		//bind this drawable's vertex buffer to the array buffer(TODO later elements array buffer)
+		//bind this drawable's vertex buffer and elements array buffer
 		GL.bindBuffer(GL.ARRAY_BUFFER,this.vertexBuffer);
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER,this.elementBuffer);
 
 		//vertex shader's setup
 		this.vertexShader.drawSetup(GL,this,world);

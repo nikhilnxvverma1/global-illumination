@@ -133,7 +133,7 @@ export class WebglTestingComponent implements OnInit {
 	makeDefaultCamera(){//1 units
 		//camera
 		let camera=new Camera();
-		camera.near=0.1;
+		camera.near=1;
 		camera.far=100;
 		camera.left=-10;
 		camera.right=10;
