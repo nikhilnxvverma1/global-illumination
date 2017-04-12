@@ -30,17 +30,17 @@ export class WebGLRenderer implements Renderer{
 
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
 		// let geometry=new CustomVertexDrawable().cube(3);
-		let geometry=new CustomVertexDrawable().sphere(5);
+		let geometry=new CustomVertexDrawable().cylinder(4,5);
 		geometry.translation.z=-3.5;
-		// geometry.rotation.y=45;
+		geometry.rotation.x=-45;
 		// geometry.rotation.z=90;
-		let animationEffect=new RotateDrawable(geometry,360,2000);
+		let animationEffect=new RotateDrawable(geometry,360,5000);
 		animationEffect.interpolation=new Linear();
 		animationEffect.yoyo=false;
 		animationEffect.alongZ=false;
-		animationEffect.alongY=true;
-		animationEffect.alongX=false;
-		// this.behaviors.push(animationEffect);
+		animationEffect.alongY=false;
+		animationEffect.alongX=true;
+		this.behaviors.push(animationEffect);
 
 		return [geometry];
 	}

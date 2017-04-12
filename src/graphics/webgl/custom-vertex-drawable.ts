@@ -212,4 +212,107 @@ export class CustomVertexDrawable extends GLDrawable{
 
 		return elementIndexForThisVertex;
 	}
+
+	cylinder(diameter:number=2,height:number=3):CustomVertexDrawable{
+		let radius=diameter/2;
+		// IMP: these steps must divide 180 evenly
+		let vStep=height/20;
+		let hStep=5;
+		const verticesInACircle = 360 / hStep;
+
+		let verticesSoFar=0;
+		this.vertices=[];
+		this.elements=[];
+
+		//center of top circle
+		let y=height/2;
+		let goingUp=new Vector(0,1,0);
+		this.addVertex(new Point(0,y,0),goingUp.clone());
+		verticesSoFar++;
+		const topCircleCenterElement=0;
+
+		//top circle (boundary points)
+		let startingCircleElement = verticesSoFar;
+		for (let j = 0; j < 360; j += hStep) {
+
+			let x = radius * Math.cos(toRadians(j));
+			let z = radius * Math.sin(toRadians(j));
+
+			this.addVertex(new Point(x, y, z),goingUp.clone());
+			verticesSoFar++;
+
+			//element index for this vertex and the next(in possible future)
+			const thisElement = verticesSoFar - 1;
+			const nextElement = j == 360-hStep ? startingCircleElement : thisElement + 1;//wrap around for the last element
+
+			this.elements.push(nextElement);
+			this.elements.push(thisElement);
+			this.elements.push(topCircleCenterElement);
+		}
+
+		//vertical down (top to bottom in y)
+		for (y = height/2; y >= -height/2; y -= vStep) {
+
+			//disk (circle in the xz plane)
+			startingCircleElement = verticesSoFar;
+			for (let j = 0; j < 360; j += hStep) {
+
+				let x = radius * Math.cos(toRadians(j));
+				let z = radius * Math.sin(toRadians(j));
+
+				let pointOnCylinder = new Point(x, y, z);
+				let normalOnPoint = Vector.between(new Point(0,y,0),pointOnCylinder);
+				this.addVertex(pointOnCylinder,normalOnPoint);
+				verticesSoFar++;
+
+				if (y != height / 2 ) { //not first or last iteration of the outer loop
+
+					//element index for this vertex and the next(in possible future)
+					const thisElement = verticesSoFar - 1;
+					const nextElement = j == 360-hStep ? startingCircleElement : thisElement + 1;//wrap around for the last element
+
+					//corresponding vertex elements of previous height
+					const thisElementPrevious = thisElement - verticesInACircle;
+					const nextElementPrevious = nextElement - verticesInACircle;
+
+					//make a quad using these 4 vertices (counter clockwise)
+					this.elements.push(nextElement);
+					this.elements.push(thisElement);
+					this.elements.push(thisElementPrevious);
+
+					this.elements.push(nextElementPrevious);
+					this.elements.push(nextElement);
+					this.elements.push(thisElementPrevious);
+				}
+			}
+		}
+
+		//bottom circle
+		y=-height/2;
+		const goingDown=new Vector(0,-1,0);
+		this.addVertex(new Point(0,y,0),goingDown.clone());
+		const bottomCircleCenterElement=verticesSoFar;
+		verticesSoFar++;
+		startingCircleElement = verticesSoFar;
+
+		//bottom circle (boundary points)
+		for (let j = 0; j < 360; j += hStep) {
+
+			let x = radius * Math.cos(toRadians(j));
+			let z = radius * Math.sin(toRadians(j));
+			this.addVertex(new Point(x, y, z),goingDown.clone());
+			verticesSoFar++;
+
+			//element index for this vertex and the next(in possible future)
+			const thisElement = verticesSoFar - 1;
+			const nextElement = j == 360-hStep ? startingCircleElement : thisElement + 1;//wrap around for the last element
+
+			this.elements.push(thisElement);
+			this.elements.push(nextElement);
+			this.elements.push(bottomCircleCenterElement);
+		}
+
+		
+		return this;
+	}
 }
