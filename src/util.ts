@@ -5,6 +5,11 @@ export function toRadians(degree:number):number{//=1 step
 	return degree*(Math.PI/180);
 }
 
+export function toDegrees(radian:number):number{//=1 step
+	return radian * (180 / Math.PI);
+}
+
+
 export function printMat4(mat:mat4){//=1 step
 
 	//print in column major format
