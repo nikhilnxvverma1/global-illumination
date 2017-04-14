@@ -13,6 +13,7 @@ import { ScaleDrawable } from '../animation/scale-drawable';
 import { RotateDrawable } from '../animation/rotate-drawable';
 import { TranslateDrawable } from '../animation/translate-drawable';
 import { Linear } from '../animation/interpolation-curve';
+import { OrbitalRevolution } from '../animation/orbital-revolution';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
@@ -30,9 +31,9 @@ export class WebGLRenderer implements Renderer{
 
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
 		// let geometry=new CustomVertexDrawable().cube(3);
-		let geometry=new CustomVertexDrawable().circle(7);
-		geometry.translation.z=-3.5;
-		geometry.rotation.x=90;
+		let geometry=new CustomVertexDrawable().cylinder(7);
+		// geometry.translation.z=-3.5;
+		geometry.rotation.x=45;
 		// geometry.rotation.z=90;
 		let animationEffect=new RotateDrawable(geometry,360,5000);
 		animationEffect.interpolation=new Linear();
@@ -41,6 +42,9 @@ export class WebGLRenderer implements Renderer{
 		animationEffect.alongY=false;
 		animationEffect.alongX=true;
 		// this.behaviors.push(animationEffect);
+
+		const revolveCamera=new OrbitalRevolution(this.world.camera);
+		this.behaviors.push(revolveCamera);
 
 		return [geometry];
 	}
