@@ -418,4 +418,62 @@ export class CustomVertexDrawable extends GLDrawable {
 		}
 		return this;
 	}
+
+	plane(width = 2,length = 2): CustomVertexDrawable {
+
+		//half side
+		const hw = width / 2;
+		const hl = length / 2;
+
+		//vertex : position(3) + normal(3) + tex coords(2)
+		//TODO tex coords are currently dummy
+		this.vertices = [
+
+			// along the xz plane
+			-hw, 0, -hl, 0, 1, 0, 0, 0,
+			hw, 0, -hl, 0, 1, 0, 0, 0,
+			hw, 0, hl, 0, 1, 0, 0, 0,
+			-hw, 0, hl, 0, 1, 0, 0, 0,
+
+		];
+
+		this.elements = [0, 2, 1, 0, 3, 2];
+		// this.elements = [0, 1, 2, 0, 2, 3];
+
+		return this;
+	}
+
+	circle(diameter:number=2) :CustomVertexDrawable{
+
+		
+		//multiple of 360
+		const hStep = 5;
+		const radius = diameter/2;
+		const startingCircleElement = 0;
+		const goingUp=new Vector(1,0,0);
+
+		this.vertices = [];
+		this.elements = [];
+
+		this.addVertex(new Point(0, 0, 0), goingUp.clone());
+		let verticesSoFar = 1;
+
+		// circle in xz plane
+		for (let j = 0; j <= 360; j += hStep) {
+
+			let x = radius * Math.cos(toRadians(j));
+			let z = radius * Math.sin(toRadians(j));
+			this.addVertex(new Point(x, 0, z), goingUp.clone());
+			verticesSoFar++;
+
+			//element index for this vertex and the next(in possible future)
+			const thisElement = verticesSoFar - 1;
+			const nextElement = j == 360 ? startingCircleElement : thisElement + 1;//wrap around for the last element
+
+			this.elements.push(nextElement);
+			this.elements.push(thisElement);
+			this.elements.push(0);//center point
+		}
+		return this;
+	}
 }
