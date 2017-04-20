@@ -8,6 +8,7 @@ import { RayTracerDemoComponent } from './ray-tracer-demo/ray-tracer-demo.compon
 import { BasicShadingComponent } from './basic-shading/basic-shading.component';
 import { ProceduralTexturingComponent } from './procedural-texturing/procedural-texturing.component';
 import { WebglTestingComponent } from './webgl-testing/webgl-testing.component';
+import { ReflectionComponent } from './reflection/reflection.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { WebglTestingComponent } from './webgl-testing/webgl-testing.component';
     RayTracerDemoComponent,
     BasicShadingComponent,
     ProceduralTexturingComponent,
-    WebglTestingComponent
+    WebglTestingComponent,
+    ReflectionComponent
   ],
   imports: [
     BrowserModule,

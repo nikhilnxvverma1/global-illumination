@@ -17,12 +17,15 @@ export class PhongIlluminationModel implements IlluminationModel{
 	ks:number;
 	/**Exponent controlling the size of specular highlight */
 	ke:number;
+	/** Reflectionm coefficient that determines color coming from other surfaces */
+	kr:number;
 
 	constructor(ka:number=0.9,kd:number=0.3,ks:number=0.6,ke:number=2){
 		this.ka=ka;
 		this.kd=kd;
 		this.ks=ks;
 		this.ke=ke;
+		this.kr=0;
 	}
 
 	illuminate(point: Point, geometry: Geometry, world: World): Color {
