@@ -36,7 +36,7 @@ export class ReflectionDriver {
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
 				let ray = new Ray(camera.origin, Vector.between(camera.origin,pixel));
-				pixelGrid.grid[j][i] = this.illuminate(ray,world,0);
+				pixelGrid.grid[j][i] = this.illuminate(ray,world,0).ensureBounds();
 			}
 		}
 		return pixelGrid;
@@ -56,19 +56,23 @@ export class ReflectionDriver {
 			if (intersection != null) {
 				
 				if(best!=null){
-					//update if closest to camera
+					//update if closest to point to be closed to
 					best.updateIfNeeded(geometry,intersection)
 				}else{
-					best=new IntersectionResult(geometry,intersection,camera);
+					best=new IntersectionResult(geometry,intersection,ray.origin);
 				}
 			}
 		}
 
-		let reflectedRay:Ray;
-
 		//update color of the pixel grid at this pixel
-		let pixelColor=new Color(0,0,0);
+		let pixelColor=new Color(0,0,0,0);
 		if (best != null) {
+
+			let intersectionPoint=best.primary;
+			let normal= best.geometry.normalExtrudingTo(best.primary).normalize();
+			let reflectedVector=intersectionPoint.reflect(ray.direction.opposite(),normal).normalize();//we inverte it again to get the right direction
+
+			let reflectedRay=new Ray(best.primary,reflectedVector);
 			
 			pixelColor=best.geometry.illuminationModel.illuminate(best.primary,best.geometry,world);
 			if(depth<ReflectionDriver.MAX_DEPTH){
@@ -80,6 +84,8 @@ export class ReflectionDriver {
 					pixelColor.addToSelf(detailedPixel.scalerProduct(reflectionCoefficient));
 				}
 			}
+		}else{
+			pixelColor=new Color(0,0,255,255);
 		}
 		return pixelColor;
 	}
@@ -90,18 +96,18 @@ export class ReflectionDriver {
 class IntersectionResult {
 	geometry: Geometry;
 	primary: Point;
-	camera:Camera;
+	pointToBeCloseTo:Point;
 
-	constructor(geometry:Geometry,intersection:Point,camera:Camera){
+	constructor(geometry:Geometry,intersection:Point,pointToBeClosedTo:Point){
 		this.geometry=geometry;
 		this.primary=intersection;
-		this.camera=camera;
+		this.pointToBeCloseTo=pointToBeClosedTo;
 		// console.log("Intersected");
 	}
 
 	updateIfNeeded(geometry:Geometry,intersection:Point):boolean{
-		let distanceFromCamera=this.camera.origin.distance(intersection);
-		if(distanceFromCamera<this.camera.origin.distance(this.primary)){
+		let distanceFromOrigin=this.pointToBeCloseTo.distance(intersection);
+		if(distanceFromOrigin<this.pointToBeCloseTo.distance(this.primary)){
 			this.geometry=geometry;
 			this.primary=intersection;
 			return true;

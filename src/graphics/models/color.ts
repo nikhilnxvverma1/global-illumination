@@ -86,10 +86,10 @@ export class Color {
 
 	/**Adds element wise sum with another vector and MODIFIES original object */
 	addToSelf(that:Color):Color{
-		this.r+=that.r;
-		this.g+=that.g;
-		this.b+=that.b;
-		this.a+=that.a;
+		this.r = this.r + that.r > 255 ? 255 : this.r + that.r;
+		this.g = this.g + that.g > 255 ? 255 : this.g + that.g;
+		this.b = this.b + that.b > 255 ? 255 : this.b + that.b;
+		this.a = this.a + that.a > 255 ? 255 : this.a + that.a;
 		return this;
 	}
 
@@ -108,6 +108,14 @@ export class Color {
 
 	asVec3():vec3{
 		return vec3.fromValues(this.r,this.g,this.b);
+	}
+
+	ensureBounds():Color{
+		this.r=this.r<0?0:this.r>255?255:this.r;
+		this.g=this.g<0?0:this.g>255?255:this.g;
+		this.b=this.b<0?0:this.b>255?255:this.b;
+		this.a=this.a<0?0:this.a>255?255:this.a;
+		return this;
 	}
 
 }

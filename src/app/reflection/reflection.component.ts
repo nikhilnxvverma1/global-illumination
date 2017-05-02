@@ -40,12 +40,13 @@ export class ReflectionComponent implements OnInit {
 
 		//upper brown sphere
 		let sphere1=new Sphere(10);
-		sphere1.position=new Point(5,10,-35);
+		// sphere1.position=new Point(5,10,-35);
+		sphere1.position=new Point(8,5,-25);
 		sphere1.color=new Color().set("#542312");
 
 		//lower green sphere 
 		let sphere2=new Sphere(10);
-		// sphere2.position=new Point(-5,-5,-65);
+		// sphere2.position=new Point(-5,-5,-40);
 		sphere2.position=new Point(-5,-5,-40);
 		sphere2.color=new Color().set("#245214");
 		let pi=sphere2.illuminationModel as PhongIlluminationModel;
