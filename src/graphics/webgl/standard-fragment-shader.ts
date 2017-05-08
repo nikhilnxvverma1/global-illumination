@@ -2,7 +2,7 @@ import { GLDrawable } from './gl-drawable';
 import { FragmentShader } from './shader';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
-import { World } from '../models/world';
+import { GLScene } from '../models/scene';
 import { removeFromEnd } from '../../util';
 
 /** Raw shader code in string  */
@@ -70,10 +70,10 @@ export class StandardFragmentShader extends FragmentShader{
 		return code;
 	}
 
-	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World){
+	drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,scene:GLScene){
 
 		this.sendDownMaterialInfo(GL,glDrawable);
-		this.sendDownLightInfo(GL,glDrawable,world);
+		this.sendDownLightInfo(GL,glDrawable,scene);
 	}
 
 	private sendDownMaterialInfo(GL:WebGLRenderingContext,glDrawable:GLDrawable){
@@ -96,31 +96,31 @@ export class StandardFragmentShader extends FragmentShader{
 		GL.uniform4fv(fixedColorLocation,glDrawable.material.fixedColor.toFractionalValues().asArray());
 	}
 
-	private sendDownLightInfo(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World){
+	private sendDownLightInfo(GL:WebGLRenderingContext,glDrawable:GLDrawable,scene:GLScene){
 	
 		//camera position
 		let cameraPositionLocation=GL.getUniformLocation(glDrawable.webGLProgram,"cameraPosition");
-		GL.uniform3fv(cameraPositionLocation,world.camera.origin.asVec3());
+		GL.uniform3fv(cameraPositionLocation,scene.camera.origin.asVec3());
 
 		//ambient light
 		let ambientLightLocation=GL.getUniformLocation(glDrawable.webGLProgram,"ambientLight");
-		GL.uniform4fv(ambientLightLocation,world.ambientLight.toFractionalValues().asArray());
+		GL.uniform4fv(ambientLightLocation,scene.ambientLight.toFractionalValues().asArray());
 
 		//number of lights in scene
 		let totalLightsLocation=GL.getUniformLocation(glDrawable.webGLProgram,"totalLights");
-		GL.uniform1i(totalLightsLocation,world.lightList.length);
+		GL.uniform1i(totalLightsLocation,scene.lightList.length);
 
 		//lights in the world
-		for(let i=0;i<world.lightList.length;i++){
+		for(let i=0;i<scene.lightList.length;i++){
 
 			//position
 			let lightPositionLocation=GL.getUniformLocation(glDrawable.webGLProgram,`lightList[${i}].position`);
-			let xyz=world.lightList[i].position.asArrayNonHomogenous();
+			let xyz=scene.lightList[i].position.asArrayNonHomogenous();
 			GL.uniform3fv(lightPositionLocation,xyz);
 
 			//color
 			let lightColorLocation=GL.getUniformLocation(glDrawable.webGLProgram,`lightList[${i}].color`);
-			GL.uniform3fv(lightColorLocation,world.lightList[i].color.toFractionalValues().asVec3());
+			GL.uniform3fv(lightColorLocation,scene.lightList[i].color.toFractionalValues().asVec3());
 		}
 	}
 

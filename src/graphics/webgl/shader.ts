@@ -1,5 +1,5 @@
 import { GLDrawable } from './gl-drawable';
-import { World } from '../models/world';
+import { GLScene } from "../models/scene";
 
 export abstract class Shader{
 	private _shaderId:WebGLShader;
@@ -39,7 +39,7 @@ export abstract class Shader{
 	}
 
 	/** Responsible for setting up any data that needs to be passed down to the shaders */
-	abstract drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,world:World);
+	abstract drawSetup(GL:WebGLRenderingContext,glDrawable:GLDrawable,scene:GLScene);
 }
 
 export abstract class VertexShader extends Shader{

@@ -6,7 +6,7 @@ import { Vector } from '../models/vector';
 import { Point } from '../models/point';
 import { Camera } from '../models/camera';
 import { Light } from '../models/light';
-import { World } from '../models/world';
+import { GLScene } from '../models/scene';
 import { Material } from '../models/material';
 import { DrawableBehavior,InitAction,UpdateAction } from './lifecycle';
 import { removeFromList } from '../../util';
@@ -188,7 +188,7 @@ export abstract class GLDrawable{
 
 	} 
 
-	drawSetup(GL:WebGLRenderingContext,world:World,dTime:number){//=5 steps
+	drawSetup(GL:WebGLRenderingContext,scene:GLScene,dTime:number){//=5 steps
 		//use the shader program we setup earlier, 
 		GL.useProgram(this.webGLProgram);
 
@@ -197,10 +197,10 @@ export abstract class GLDrawable{
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER,this.elementBuffer);
 
 		//vertex shader's setup
-		this.vertexShader.drawSetup(GL,this,world);
+		this.vertexShader.drawSetup(GL,this,scene);
 
 		//fragment shader's setup
-		this.fragmentShader.drawSetup(GL,this,world);
+		this.fragmentShader.drawSetup(GL,this,scene);
 
 		//run all update actions
 		for(let updateAction of this.updateActions){

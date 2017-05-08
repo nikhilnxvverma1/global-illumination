@@ -14,19 +14,20 @@ import { RotateDrawable } from '../animation/rotate-drawable';
 import { TranslateDrawable } from '../animation/translate-drawable';
 import { Linear } from '../animation/interpolation-curve';
 import { OrbitalRevolution } from '../animation/orbital-revolution';
+import { GLScene } from '../models/scene';
 
 export class WebGLRenderer implements Renderer{
 	gl:WebGLRenderingContext;
-	projectLocation:string
-	world:World;
+	// world:World;
+	scene:GLScene;
 	behaviors:Behavior[]=[];
 	private lastTime;
 
-	private drawableList:GLDrawable[];//TODO temporary
+	// private drawableList:GLDrawable[];//TODO temporary
 
-	constructor(gl:WebGLRenderingContext,projectLocaiton:string){
+	constructor(gl:WebGLRenderingContext,scene:GLScene){
 		this.gl=gl;
-		this.projectLocation=projectLocaiton;
+		this.scene=scene;
 	}
 
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
@@ -43,8 +44,8 @@ export class WebGLRenderer implements Renderer{
 		animationEffect.alongX=true;
 		// this.behaviors.push(animationEffect);
 
-		const revolveCamera=new OrbitalRevolution(this.world.camera);
-		this.behaviors.push(revolveCamera);
+		const revolveCamera=new OrbitalRevolution(this.scene.camera);
+		// this.behaviors.push(revolveCamera);
 
 		return [geometry];
 	}
@@ -55,7 +56,7 @@ export class WebGLRenderer implements Renderer{
 		let GL=this.gl;
 
 		//all the drawables in a list
-		this.drawableList=this.collectAllDrawables();
+		this.scene.drawableList=this.collectAllDrawables();
 
 		//initialize all behviors
 		for(let behvior of this.behaviors){
@@ -63,7 +64,7 @@ export class WebGLRenderer implements Renderer{
 		}
 
 		//initialize drawables
-		for(let drawable of this.drawableList){
+		for(let drawable of this.scene.drawableList){
 			drawable.init(GL);
 		}
 
@@ -100,8 +101,8 @@ export class WebGLRenderer implements Renderer{
 		GL.cullFace(GL.BACK);
 
 		//draw each after setting up vertex shaders and fragment shaders
-		for(let drawable of this.drawableList){
-			drawable.drawSetup(GL, this.world, dTime);
+		for(let drawable of this.scene.drawableList){
+			drawable.drawSetup(GL, this.scene, dTime);
 			GL.drawElements(GL.TRIANGLES, drawable.elementIndices().length, GL.UNSIGNED_SHORT, 0);
 			// GL.drawElements(GL.POINTS, drawable.elementIndices().length, GL.UNSIGNED_SHORT, 0);
 		}
