@@ -14,7 +14,7 @@ export class OrbitalRevolution implements Behavior {
 	constructor(camera: Camera) {
 		this.camera = camera;
 		this.center = new Point(0, 0, 0);
-		this.radius = 6;
+		this.radius = 60;
 		this.frequency = 5000;
 		this.angle = 0;
 	}

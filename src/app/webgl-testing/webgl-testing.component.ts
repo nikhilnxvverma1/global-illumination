@@ -42,8 +42,8 @@ export class WebglTestingComponent implements OnInit {
 	};
 
 	camera<Camera>{
-		origin_z=5,
-		origin_y=3,
+		origin_z=70,
+		origin_y=30,
 		near=1,
 		far=100,
 		left=-10,
@@ -82,6 +82,21 @@ export class WebglTestingComponent implements OnInit {
 		translation_x=16,
 		args=[4]
 	};
+
+	animation1<TranslateDrawable>{
+		loop="false",
+		yoyo="false",
+		duration=400,
+		delay=0,
+		curve=(easeInCubic),
+		along_x="true",
+		along_y="true",
+		along_z="true",
+		variance=60,
+		drawable=(cube)
+	};
+
+	easeInCubic<EaseInCubic>{};
 	`
 	
 	constructor(

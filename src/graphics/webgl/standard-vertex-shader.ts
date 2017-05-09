@@ -100,8 +100,8 @@ export class StandardVertexShader extends VertexShader{
 
 		//projection matrix
 		let projectionMatrix=mat4.create();
-		// mat4.perspective(projectionMatrix, camera.fieldOfViewInRadians(),camera.aspectRatio(),0.1,100);//doesn't work
-		mat4.frustum(projectionMatrix,camera.left,camera.right,camera.bottom,camera.top,camera.near,camera.far);//uses traditional formula
+		mat4.perspective(projectionMatrix, camera.fieldOfViewInRadians(),camera.aspectRatio(),0.1,100);//doesn't work
+		// mat4.frustum(projectionMatrix,camera.left,camera.right,camera.bottom,camera.top,camera.near,camera.far);//uses traditional formula
 		let projectionMatrixLocation=GL.getUniformLocation(glDrawable.webGLProgram,"projectionMatrix");
 		GL.uniformMatrix4fv(projectionMatrixLocation,false,projectionMatrix);
 	}

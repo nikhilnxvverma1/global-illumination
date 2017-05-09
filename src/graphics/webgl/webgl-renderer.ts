@@ -124,6 +124,9 @@ export class WebGLRenderer implements Renderer{
 		//alias to this.gl
 		let GL=this.gl;
 
+		const revolveCamera=new OrbitalRevolution(this.scene.camera);
+		this.scene.behaviourList.push(revolveCamera);
+
 		//initialize all behviors
 		for(let behvior of this.scene.behaviourList){
 			behvior.start();
