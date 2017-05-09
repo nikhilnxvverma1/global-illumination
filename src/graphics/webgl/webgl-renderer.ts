@@ -33,8 +33,8 @@ export class WebGLRenderer implements Renderer{
 	collectAllDrawables():GLDrawable[]{//TODO rough and will be replaced with something else
 		// let geometry=new CustomVertexDrawable().cube(3);
 		let geometry=new CustomVertexDrawable().cylinder(7);
-		// geometry.translation.z=-3.5;
-		geometry.rotation.x=45;
+		geometry.translation.z=-3.5;
+		// geometry.rotation.x=45;
 		// geometry.rotation.z=90;
 		let animationEffect=new RotateDrawable(geometry,360,5000);
 		animationEffect.interpolation=new Linear();
@@ -54,12 +54,9 @@ export class WebGLRenderer implements Renderer{
 
 		//alias to this.gl
 		let GL=this.gl;
-
-		//all the drawables in a list
-		this.scene.drawableList=this.collectAllDrawables();
-
+		
 		//initialize all behviors
-		for(let behvior of this.behaviors){
+		for(let behvior of this.scene.behaviourList){
 			behvior.start();
 		}
 
@@ -80,7 +77,7 @@ export class WebGLRenderer implements Renderer{
 		let dTime = this.computeDeltaTime(time);
 
 		//update all behviors, before starting any rendering
-		for(let behvior of this.behaviors){
+		for(let behvior of this.scene.behaviourList){
 			behvior.update(dTime);
 		}
 

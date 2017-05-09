@@ -14,6 +14,13 @@ import { Geometry } from '../../graphics/models/geometry';
 import { RectQuad } from '../../graphics/models/rect-quad';
 import { GLScene } from '../../graphics/models/scene';
 import { Light } from '../../graphics/models/light';
+import { GLDrawable } from '../../graphics/webgl/gl-drawable';
+import { CustomVertexDrawable } from '../../graphics/webgl/custom-vertex-drawable';
+import { RotateDrawable } from '../../graphics/animation/rotate-drawable';
+import { ScaleDrawable } from '../../graphics/animation/scale-drawable';
+import { TranslateDrawable } from '../../graphics/animation/translate-drawable';
+import { Linear } from '../../graphics/animation/interpolation-curve';
+import { OrbitalRevolution } from '../../graphics/animation/orbital-revolution';
 
 
 @Component({
@@ -49,7 +56,7 @@ export class WebglTestingComponent implements OnInit {
 		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
 
 		//set the world on the webgl world
-		let scene=this.makeSimpleWorld();
+		let scene=this.makeSimpleScene();
 
 		//set a webgl based renderer
 		this.renderer=new WebGLRenderer(canvas.getContext('webgl'),scene);
@@ -59,31 +66,21 @@ export class WebglTestingComponent implements OnInit {
 		this.renderer.draw();
 	}
 
-	private makeSimpleWorld():GLScene{//=3 units
+	private makeSimpleScene():GLScene{//=3 units
 
-		//quad
-		let plane=new RectQuad();
-		plane.position=new Point(0,-8,-40);
-		plane.normal=new Vector(0,1,0);
-		plane.color=new Color().set("#141574");
-		plane.width=150;
-		plane.height=150;
-
-		//geometry list
-		let geometryList:Geometry[]=[];
-		geometryList.push(plane);
-
-		//world
+		//scene
 		let scene=new GLScene();
 		scene.camera=this.makeDefaultCamera();
 
-		//MAKE a light and SUPPLY that as well
+		//make a light and supply that as well
 		let light1=new Light(new Point(0,2,5));
 		light1.color.set("#FFFF36");
 		scene.lightList.push(light1);
 
 		let light2=new Light(new Point(15,10,-2));
 		light2.color.set("#DE72A4");
+
+		this.simplePopulation(scene);
 
 		return scene;
 	}
@@ -103,8 +100,10 @@ export class WebglTestingComponent implements OnInit {
 	makeDefaultCamera():Camera{//1 units
 		//camera
 		let camera=new Camera();
-		camera.origin.z=2;
-		camera.origin.y=2;
+		camera.origin.z=5;
+		camera.origin.y=3;
+		// camera.lookAt.y=-1;
+		// camera.up=new Vector(0,0,-1);
 		camera.near=1;
 		camera.far=100;
 		camera.left=-10;
@@ -113,4 +112,29 @@ export class WebglTestingComponent implements OnInit {
 		camera.bottom=-10;
 		return camera;
 	}
+
+	private simplePopulation(scene:GLScene){
+		// let geometry=new CustomVertexDrawable().cube(3);
+		let cylinder=new CustomVertexDrawable().cylinder(7,5);
+		let cube=new CustomVertexDrawable().cube(3);
+		cube.translation.x=-15;
+		let sphere=new CustomVertexDrawable().sphere(4);
+		sphere.translation.x=16;
+	
+		scene.drawableList.push(cylinder);
+		scene.drawableList.push(cube);
+		scene.drawableList.push(sphere);
+
+		// let animationEffect=new RotateDrawable(cylinder,360,5000);
+		// animationEffect.interpolation=new Linear();
+		// animationEffect.yoyo=false;
+		// animationEffect.alongZ=false;
+		// animationEffect.alongY=false;
+		// animationEffect.alongX=true;
+		// this.behaviors.push(animationEffect);
+
+		const revolveCamera=new OrbitalRevolution(scene.camera);
+		// scene.behaviourList.push(revolveCamera);
+	}
+
 }
