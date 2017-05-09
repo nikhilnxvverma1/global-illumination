@@ -8,6 +8,12 @@ import { Color } from './models/color';
 import { Light } from './models/light';
 import { Point } from './models/point';
 import { CustomVertexDrawable } from './webgl/custom-vertex-drawable';
+import { Behavior } from './webgl/lifecycle';
+import { AnimationEffect } from './animation/animation-effect';
+import { ScaleDrawable } from './animation/scale-drawable';
+import { RotateDrawable } from './animation/rotate-drawable';
+import { TranslateDrawable } from './animation/translate-drawable';
+import * as interpolation from './animation/interpolation-curve';
 
 /** Loads the scene description language and outputs a GLScene */
 export class SceneLoader{
@@ -34,6 +40,7 @@ export class SceneLoader{
 		let cameraNode=sceneNode.getAttributeValue("camera");
 		let ambientLightNode=sceneNode.getAttributeValue("ambientLight");
 		let drawableListNode=sceneNode.getAttributeValue("drawableList");
+		let behaviorListNode=sceneNode.getAttributeValue("behaviorList");
 		let lightListNode=sceneNode.getAttributeValue("lightList");
 
 		//build the scene using these nodes
@@ -50,6 +57,12 @@ export class SceneLoader{
 			scene.lightList.push(light);
 		});
 
+		forEachIn(behaviorListNode,(element:GFNode,index:number)=>{
+			let behvaiour=this.behaviorFrom(element);
+			scene.behaviorList.push(behvaiour);
+		});
+
+		sceneNode.userData=scene;
 		return scene;
 	}
 
@@ -75,6 +88,7 @@ export class SceneLoader{
 		camera.top=this.valueOf("top",node,camera.top);
 		camera.bottom=this.valueOf("bottom",node,camera.bottom);
 
+		node.userData=camera;
 		return camera;
 	}
 
@@ -91,7 +105,72 @@ export class SceneLoader{
 			color.set(hexCode);
 		}
 
+		node.userData=color;
 		return color;
+	}
+
+	private behaviorFrom(behaviorNode:GFNode):Behavior{
+
+		if(behaviorNode.type=='ScaleDrawable'||behaviorNode.type=='RotateDrawable'||behaviorNode.type=='TranslateDrawable'){
+			return this.animationFrom(behaviorNode);
+		}
+		return null;
+	}
+
+	private animationFrom(animationNode:GFNode):Behavior{
+		let animation=null;
+		let drawableNode=animationNode.getAttributeValue("drawable");
+		//make the specific animation now, and we will add the drawable later
+		switch(animationNode.type){
+			case "ScaleDrawable":
+				animation=new ScaleDrawable(drawableNode.userData);
+				break;
+			case "RotateDrawable":
+				animation=new RotateDrawable(drawableNode.userData);
+				break;
+			case "TranslateDrawable":
+				animation=new TranslateDrawable(drawableNode.userData);
+				break;
+		}
+
+		animation.alongX=this.valueOf("along_x",animationNode,"true")=='true';
+		animation.alongY=this.valueOf("along_y",animationNode,"true")=='true';
+		animation.alongZ=this.valueOf("along_z",animationNode,"true")=='true';
+		animation.variance=this.valueOf("variance",animationNode,50);
+
+		animation.loop=this.valueOf("loop",animationNode,"true")=="true";
+		animation.yoyo=this.valueOf("yoyo",animationNode,"true")=="true";
+		animation.duration=this.valueOf("duration",animationNode,400);
+		animation.delay=this.valueOf("delay",animationNode,0);
+
+		
+		animation.interpolation=this.getCurveBy(this.valueOf("curve",animationNode,"EaseInCubic"));
+		animation.reverseInterpolation=this.getCurveBy(this.valueOf("curve",animationNode,"EaseOutCubic"));
+		
+		
+		return animation;
+	}
+
+	private getCurveBy(curveName:string):interpolation.InterpolationCurve{
+		let interpolationCurve:interpolation.InterpolationCurve;
+		switch(curveName){
+			case "EaseInCubic":
+				interpolationCurve=new interpolation.EaseInCubic();
+				break;
+			case "EaseOutCubic":
+				interpolationCurve=new interpolation.EaseOutCubic();
+				break;
+			case "EaseInQuadratic":
+				interpolationCurve=new interpolation.EaseInQuadratic();
+				break;
+			case "EaseInQuadratic":
+				interpolationCurve=new interpolation.EaseInQuadratic();
+				break;
+			case "Linear":
+				interpolationCurve=new interpolation.Linear();
+				break;
+		}
+		return interpolationCurve;
 	}
 
 	private customVertexDrawableFrom(node:GFNode):CustomVertexDrawable{
@@ -174,7 +253,7 @@ export class SceneLoader{
 				}
 				break;
 		}
-		
+		node.userData=drawable;
 		return drawable;
 	}
 
@@ -189,6 +268,7 @@ export class SceneLoader{
 		light.color.b=this.valueOf("color_b",node,light.color.b);
 		light.color.a=this.valueOf("color_a",node,light.color.a);
 
+		node.userData=light;
 		return light;
 	}
 

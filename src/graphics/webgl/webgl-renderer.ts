@@ -56,7 +56,7 @@ export class WebGLRenderer implements Renderer{
 		let GL=this.gl;
 
 		//initialize all behviors
-		for(let behvior of this.scene.behaviourList){
+		for(let behvior of this.scene.behaviorList){
 			behvior.start();
 		}
 
@@ -77,7 +77,7 @@ export class WebGLRenderer implements Renderer{
 		let dTime = this.computeDeltaTime(time);
 
 		//update all behviors, before starting any rendering
-		for(let behvior of this.scene.behaviourList){
+		for(let behvior of this.scene.behaviorList){
 			behvior.update(dTime);
 		}
 
@@ -124,11 +124,11 @@ export class WebGLRenderer implements Renderer{
 		//alias to this.gl
 		let GL=this.gl;
 
-		const revolveCamera=new OrbitalRevolution(this.scene.camera);
-		this.scene.behaviourList.push(revolveCamera);
+		// const revolveCamera=new OrbitalRevolution(this.scene.camera);
+		// this.scene.behaviorList.push(revolveCamera);
 
 		//initialize all behviors
-		for(let behvior of this.scene.behaviourList){
+		for(let behvior of this.scene.behaviorList){
 			behvior.start();
 		}
 

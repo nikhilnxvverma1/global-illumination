@@ -6,7 +6,7 @@ import { Color } from './color';
 
 export class GLScene{
 	camera:Camera;
-	behaviourList:Behavior[]=[];
+	behaviorList:Behavior[]=[];
 	drawableList:GLDrawable[]=[];
 	lightList:Light[]=[];
 	ambientLight:Color=new Color(200,200,200,255);

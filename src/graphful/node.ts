@@ -12,6 +12,8 @@ export class GFNode{
 	value:any;
 	/** Placeholder nodes are used by edges that don't have actual nodes prepared up yet */
 	placeholder=false;
+	/** A place for user to store their own data that should be associated with this node */
+	userData:any;
 
 	getAttributeValue(attributeName:string):any{
 		let connectedNode:GFNode;

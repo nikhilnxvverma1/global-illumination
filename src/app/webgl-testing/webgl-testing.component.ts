@@ -38,6 +38,7 @@ export class WebglTestingComponent implements OnInit {
 		camera=(camera),
 		drawableList=[(sphere),(cylinder),(cube)],
 		lightList=[(light1)],
+		behaviorList=[(animation1)],
 		ambientLight=(ambientLight)
 	};
 
@@ -84,19 +85,18 @@ export class WebglTestingComponent implements OnInit {
 	};
 
 	animation1<TranslateDrawable>{
-		loop="false",
-		yoyo="false",
-		duration=400,
+		loop="true",
+		yoyo="true",
+		duration=1000,
 		delay=0,
-		curve=(easeInCubic),
-		along_x="true",
+		curve="EaseInCubic",
+		reverseCurve="EaseOutCubic",
+		along_x="false",
 		along_y="true",
-		along_z="true",
-		variance=60,
+		along_z="false",
+		variance=10,
 		drawable=(cube)
 	};
-
-	easeInCubic<EaseInCubic>{};
 	`
 	
 	constructor(
