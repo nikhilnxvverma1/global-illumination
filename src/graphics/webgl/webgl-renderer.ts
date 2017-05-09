@@ -23,7 +23,7 @@ export class WebGLRenderer implements Renderer{
 	behaviors:Behavior[]=[];
 	private lastTime;
 
-	// private drawableList:GLDrawable[];//TODO temporary
+	private schedularId:number;
 
 	constructor(gl:WebGLRenderingContext,scene:GLScene){
 		this.gl=gl;
@@ -54,7 +54,7 @@ export class WebGLRenderer implements Renderer{
 
 		//alias to this.gl
 		let GL=this.gl;
-		
+
 		//initialize all behviors
 		for(let behvior of this.scene.behaviourList){
 			behvior.start();
@@ -116,5 +116,22 @@ export class WebGLRenderer implements Renderer{
 		}
 		this.lastTime=time;
 		return dTime;
+	}
+
+	loadNewScene(scene:GLScene){
+		this.scene=scene;
+
+		//alias to this.gl
+		let GL=this.gl;
+
+		//initialize all behviors
+		for(let behvior of this.scene.behaviourList){
+			behvior.start();
+		}
+
+		//initialize drawables
+		for(let drawable of this.scene.drawableList){
+			drawable.init(GL);
+		}
 	}
 }

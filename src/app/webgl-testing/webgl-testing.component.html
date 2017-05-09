@@ -2,6 +2,8 @@
   Web GL testing
 </p>
 <canvas #myCanvas width="500" height="500"></canvas>
-<textarea>
+<textarea [(ngModel)]="graphful" style="height:495px;width:500px">
 
 </textarea>
+
+<button (click)="reloadScene()">Reload</button>

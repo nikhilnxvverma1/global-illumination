@@ -180,4 +180,9 @@ export class WebglTestingComponent implements OnInit {
 		// scene.behaviourList.push(revolveCamera);
 	}
 
+	reloadScene(){
+		let newScene = new SceneLoader().compile(this.graphful);
+		this.renderer.loadNewScene(newScene);
+	}
+
 }
