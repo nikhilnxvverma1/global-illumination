@@ -6,6 +6,7 @@ import { GLScene } from './models/scene';
 import { Camera } from './models/camera';
 import { Color } from './models/color';
 import { Light } from './models/light';
+import { Point } from './models/point';
 import { CustomVertexDrawable } from './webgl/custom-vertex-drawable';
 
 /** Loads the scene description language and outputs a GLScene */
@@ -24,7 +25,13 @@ export class SceneLoader{
 
 	private loadSceneFromGraph(graph:GFGraph):GLScene{
 		let scene=new GLScene;
-		let sceneNode=graph.getNodesOfType("GLScene");
+		
+		let allSceneNodes=graph.getNodesOfType("GLScene");
+		let sceneNode=allSceneNodes[0];
+
+		let allCameraNodes=graph.getNodesOfType("Camera");
+		let cameraNode=allCameraNodes[0];
+		let ambientLightNode=(<GFNode>sceneNode).getAttributeValue("ambientLight");
 		
 		return null;
 	}
@@ -62,15 +69,108 @@ export class SceneLoader{
 		color.b=this.valueOf("b",node,color.b);
 		color.a=this.valueOf("a",node,color.a);
 
+		let hexCode=this.valueOf("initWith",node);
+		color.set(hexCode);
+
 		return color;
 	}
 
 	private customVertexDrawableFrom(node:GFNode):CustomVertexDrawable{
-		return null;
+
+		let drawable=new CustomVertexDrawable();
+
+		drawable.scale.x=this.valueOf("scale_x",node,drawable.scale.x);
+		drawable.scale.y=this.valueOf("scale_y",node,drawable.scale.y);
+		drawable.scale.z=this.valueOf("scale_z",node,drawable.scale.z);
+
+		drawable.rotation.x=this.valueOf("rotation_x",node,drawable.rotation.x);
+		drawable.rotation.y=this.valueOf("rotation_y",node,drawable.rotation.y);
+		drawable.rotation.z=this.valueOf("rotation_z",node,drawable.rotation.z);
+
+		drawable.translation.x=this.valueOf("translation_x",node,drawable.translation.x);
+		drawable.translation.y=this.valueOf("translation_y",node,drawable.translation.y);
+		drawable.translation.z=this.valueOf("translation_z",node,drawable.translation.z);
+
+
+		//look for argument array
+		let args=node.getAttributeValue("args");
+		let argValues=[];
+		if(args!=null){
+			let argsNode=<GFNode>args;
+			let length=argsNode.edgeList.length;
+			for(let i=0;i<length;i++){
+				let value=argsNode.getAttributeValue(""+i);
+				argValues.push(parseInt(value));
+			}
+		}
+
+		let choiceOfShape=this.valueOf("shape",node);
+		switch(choiceOfShape){
+			case "cylinder":
+				if(argValues.length>1){
+					drawable.cylinder(argValues[0],argValues[1]);
+				}else if(argValues.length>0){
+					drawable.cylinder(argValues[0]);
+				}else{
+					drawable.cylinder();
+				}
+				break;
+			case "cube":
+				if(argValues.length>0){
+					drawable.cube(argValues[0]);
+				}else{
+					drawable.cube();
+				}
+				break;
+			case "sphere":
+				if(argValues.length>0){
+					drawable.sphere(argValues[0]);
+				}else{
+					drawable.sphere();
+				}
+				break;
+			case "cone":
+				if(argValues.length>1){
+					drawable.cone(argValues[0],argValues[1]);
+				}else if(argValues.length>0){
+					drawable.cone(argValues[0]);
+				}else{
+					drawable.cone();
+				}
+				break;
+			case "plane":
+				if(argValues.length>1){
+					drawable.plane(argValues[0],argValues[1]);
+				}else if(argValues.length>0){
+					drawable.plane(argValues[0]);
+				}else{
+					drawable.plane();
+				}
+				break;
+			case "circle":
+				if(argValues.length>0){
+					drawable.circle(argValues[0]);
+				}else{
+					drawable.circle();
+				}
+				break;
+		}
+		
+		return drawable;
 	}
 
 	private lightFrom(node:GFNode):Light{
-		return null;
+		let light = new Light(new Point(0,0,0));
+		light.position.x=this.valueOf("position_x",node,light.position.x);
+		light.position.y=this.valueOf("position_y",node,light.position.y);
+		light.position.z=this.valueOf("position_z",node,light.position.z);
+
+		light.color.r=this.valueOf("color_r",node,light.color.r);
+		light.color.g=this.valueOf("color_g",node,light.color.g);
+		light.color.b=this.valueOf("color_b",node,light.color.b);
+		light.color.a=this.valueOf("color_a",node,light.color.a);
+
+		return light;
 	}
 
 	private valueOf(attribute:string,node:GFNode,defaultValue?:any):any{
