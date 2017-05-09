@@ -26,14 +26,31 @@ export class SceneLoader{
 	private loadSceneFromGraph(graph:GFGraph):GLScene{
 		let scene=new GLScene;
 		
+		//find the (first)scene node in graph
 		let allSceneNodes=graph.getNodesOfType("GLScene");
 		let sceneNode=allSceneNodes[0];
 
-		let allCameraNodes=graph.getNodesOfType("Camera");
-		let cameraNode=allCameraNodes[0];
-		let ambientLightNode=(<GFNode>sceneNode).getAttributeValue("ambientLight");
-		
-		return null;
+		//find all connected nodes to that scene node
+		let cameraNode=sceneNode.getAttributeValue("camera");
+		let ambientLightNode=sceneNode.getAttributeValue("ambientLight");
+		let drawableListNode=sceneNode.getAttributeValue("drawableList");
+		let lightListNode=sceneNode.getAttributeValue("lightList");
+
+		//build the scene using these nodes
+		scene.camera=this.cameraFrom(cameraNode);
+		scene.ambientLight=this.colorFrom(ambientLightNode);
+
+		forEachIn(drawableListNode,(element:GFNode,index:number)=>{
+			let drawable=this.customVertexDrawableFrom(element);
+			scene.drawableList.push(drawable);
+		});
+
+		forEachIn(lightListNode,(element:GFNode,index:number)=>{
+			let light=this.lightFrom(element);
+			scene.lightList.push(light);
+		});
+
+		return scene;
 	}
 
 	private cameraFrom(node:GFNode):Camera{
@@ -70,7 +87,9 @@ export class SceneLoader{
 		color.a=this.valueOf("a",node,color.a);
 
 		let hexCode=this.valueOf("initWith",node);
-		color.set(hexCode);
+		if(hexCode!=null){
+			color.set(hexCode);
+		}
 
 		return color;
 	}
@@ -176,5 +195,14 @@ export class SceneLoader{
 	private valueOf(attribute:string,node:GFNode,defaultValue?:any):any{
 		let value=node.getAttributeValue(attribute);
 		return value==null?defaultValue:value;
+	}
+}
+
+/** Iterates across all the elements of a node to perform a given operation*/
+function forEachIn(arrayNode:GFNode,operation:(element:GFNode,index:number)=>void){
+	let i=0;
+	for(let edge of arrayNode.edgeList){
+		let outgoinNode=edge.node2;
+		operation(outgoinNode,i++);
 	}
 }

@@ -21,7 +21,7 @@ import { ScaleDrawable } from '../../graphics/animation/scale-drawable';
 import { TranslateDrawable } from '../../graphics/animation/translate-drawable';
 import { Linear } from '../../graphics/animation/interpolation-curve';
 import { OrbitalRevolution } from '../../graphics/animation/orbital-revolution';
-
+import { SceneLoader } from '../../graphics/scene-loader';
 
 @Component({
   selector: 'app-webgl-testing',
@@ -33,21 +33,63 @@ export class WebglTestingComponent implements OnInit {
 	@ViewChild('myCanvas') canvasElement:ElementRef;
 	private renderer:WebGLRenderer;
 
-	private clientBaseLocation:string;
+	private graphful=`
+	scene<GLScene>{
+		camera=(camera),
+		drawableList=[(sphere),(cylinder),(cube)],
+		lightList=[(light1)],
+		ambientLight=(ambientLight)
+	};
+
+	camera<Camera>{
+		origin_z=5,
+		origin_y=3,
+		near=1,
+		far=100,
+		left=-10,
+		right=10,
+		top=10,
+		bottom=-10,
+	};
+
+	ambientLight<Color>{
+		r=200,
+		g=200,
+		b=200,
+		a=255
+	};
+
+	light1<Light>{
+		position_x=0,
+		position_y=2,
+		position_z=5,
+		initWith="#FFFF36"
+	};
+
+	cylinder<CustomVertexDrawable>{
+		shape="cylinder",
+		args=[7,5]
+	};
+
+	cube<CustomVertexDrawable>{
+		shape="cube",
+		translation_x=-15,
+		args=[3]
+	};
+
+	sphere<CustomVertexDrawable>{
+		shape="sphere",
+		translation_x=16,
+		args=[4]
+	};
+	`
 	
 	constructor(
 		private http:Http
 	) { }
 
-	ngOnInit() {//=2 units
+	ngOnInit() {
 		this.initializeRenderer();
-		//base location for dist build (TODO remove as it is unneeded)
-		// this.retrieveBaseLocation().subscribe((baseLocation:string)=>{
-		// 	this.clientBaseLocation=baseLocation;
-
-		// 	//renderer setup
-		// 	this.initializeRenderer();
-		// });
 	}
 
 	private initializeRenderer() { //=4 units
@@ -56,7 +98,8 @@ export class WebglTestingComponent implements OnInit {
 		let canvas=<HTMLCanvasElement>this.canvasElement.nativeElement;
 
 		//set the world on the webgl world
-		let scene=this.makeSimpleScene();
+		// let scene=this.makeSimpleScene();
+		let scene=new SceneLoader().compile(this.graphful);
 
 		//set a webgl based renderer
 		this.renderer=new WebGLRenderer(canvas.getContext('webgl'),scene);

@@ -1,6 +1,6 @@
 import { Lexeme,LexemeType,getLexemeList,stringForLexemeType } from './lexical-analyzer';
 import { ParserTable,ParserTableValue,ParserTableValueType } from './parser-table';
-import  * as util from '../../util';
+import  * as util from '../graphful-util';
 
 /** Different types of syntax elements that can exists in a CFG */
 export enum SyntaxElementType{

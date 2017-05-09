@@ -1,6 +1,6 @@
 import { ContextFreeGrammer,Rule } from './syntax-parser';
 import { Terminal,NonTerminal,SyntaxElement,SyntaxElementType } from './syntax-parser';
-import * as util from '../../util';
+import * as util from '../graphful-util';
 
 /** Type of action in the parser table */
 export enum ParserTableValueType{
