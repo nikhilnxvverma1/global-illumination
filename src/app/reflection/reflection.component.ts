@@ -38,11 +38,11 @@ export class ReflectionComponent implements OnInit {
 		camera.top=10;
 		camera.bottom=-10;
 
-		//upper brown sphere
+		//upper blue sphere
 		let sphere1=new Sphere(10);
 		// sphere1.position=new Point(5,10,-35);
-		sphere1.position=new Point(8,5,-25);
-		sphere1.color=new Color().set("#542312");
+		sphere1.position=new Point(20,5,-20);
+		sphere1.color=new Color().set("#009898");
 
 		//lower green sphere 
 		let sphere2=new Sphere(10);

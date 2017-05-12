@@ -68,20 +68,25 @@ export class ReflectionDriver {
 		let pixelColor=new Color(0,0,0,0);
 		if (best != null) {
 
-			let intersectionPoint=best.primary;
-			let normal= best.geometry.normalExtrudingTo(best.primary).normalize();
-			let reflectedVector=intersectionPoint.reflect(ray.direction.opposite(),normal).normalize();//we inverte it again to get the right direction
-
-			let reflectedRay=new Ray(best.primary,reflectedVector);
+			//find the reflected ray by computing the reflected vector at intersection point
+			let intersectionPoint=best.intersectionPoint;
+			let normal= best.geometry.normalExtrudingTo(best.intersectionPoint).normalize();
+			let reflectedVector=intersectionPoint.reflect(ray.direction,normal).normalize();//we inverte it again to get the right direction
+			let reflectedRay=new Ray(best.intersectionPoint,reflectedVector);
 			
-			pixelColor=best.geometry.illuminationModel.illuminate(best.primary,best.geometry,world);
+			//for this pass, find the pixel color by calling the attached illumination model
+			pixelColor=best.geometry.illuminationModel.illuminate(best.intersectionPoint,best.geometry,world);
+
+			//for subsequent rays, fire off another ray in the reflected direction(called reflectd ray)
 			if(depth<ReflectionDriver.MAX_DEPTH){
 
+
+				//get the pixel color from the reflection and apply that proportional to reflection coefficient,
 				let reflectionCoefficient=(best.geometry.illuminationModel as PhongIlluminationModel).kr;
 				if(reflectionCoefficient>0){
 
 					let detailedPixel=this.illuminate(reflectedRay,world,depth+1);
-					pixelColor.addToSelf(detailedPixel.scalerProduct(reflectionCoefficient));
+					pixelColor.addToSelf(detailedPixel).scalerProduct(reflectionCoefficient);
 				}
 			}
 		}else{
@@ -95,21 +100,21 @@ export class ReflectionDriver {
 
 class IntersectionResult {
 	geometry: Geometry;
-	primary: Point;
+	intersectionPoint: Point;
 	pointToBeCloseTo:Point;
 
 	constructor(geometry:Geometry,intersection:Point,pointToBeClosedTo:Point){
 		this.geometry=geometry;
-		this.primary=intersection;
+		this.intersectionPoint=intersection;
 		this.pointToBeCloseTo=pointToBeClosedTo;
 		// console.log("Intersected");
 	}
 
 	updateIfNeeded(geometry:Geometry,intersection:Point):boolean{
 		let distanceFromOrigin=this.pointToBeCloseTo.distance(intersection);
-		if(distanceFromOrigin<this.pointToBeCloseTo.distance(this.primary)){
+		if(distanceFromOrigin<this.pointToBeCloseTo.distance(this.intersectionPoint)){
 			this.geometry=geometry;
-			this.primary=intersection;
+			this.intersectionPoint=intersection;
 			return true;
 		}
 		return false;
