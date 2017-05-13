@@ -111,11 +111,21 @@ export class Color {
 	}
 
 	ensureBounds():Color{
+		
 		this.r=this.r<0?0:this.r>255?255:this.r;
 		this.g=this.g<0?0:this.g>255?255:this.g;
 		this.b=this.b<0?0:this.b>255?255:this.b;
 		this.a=this.a<0?0:this.a>255?255:this.a;
 		return this;
+	}
+
+	isInvalid():boolean{
+		return ((this.r > 255 || this.g > 255 || this.b > 255 || this.a > 255) ||
+		 (this.r < 0 || this.g < 0 || this.b < 0 || this.a < 0)) ;
+	}
+
+	isZero():boolean{
+		return (this.r ==0 && this.g ==0 && this.b ==0);
 	}
 
 }

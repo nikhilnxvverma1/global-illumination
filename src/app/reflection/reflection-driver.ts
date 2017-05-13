@@ -36,13 +36,13 @@ export class ReflectionDriver {
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
 				let ray = new Ray(camera.origin, Vector.between(camera.origin,pixel));
-				pixelGrid.grid[j][i] = this.illuminate(ray,world,0).ensureBounds();
+				pixelGrid.grid[j][i] = this.illuminate(ray,null,world,0);
 			}
 		}
 		return pixelGrid;
 	}
 
-	illuminate(ray:Ray,world:World,depth:number){
+	illuminate(ray:Ray,originatingObject:Geometry,world:World,depth:number){
 
 		let geometryList=world.geometryList;
 		let camera = world.camera;
@@ -51,6 +51,11 @@ export class ReflectionDriver {
 		let best: IntersectionResult = null;
 		for (let geometry of geometryList) {
 
+			//skip over the originating object
+			//avoid ray intersecting with the originating object due to floating point error resulting from intersection at the origin of ray itself
+			if(geometry==originatingObject){
+				continue;
+			}
 			//compute intersections with ray
 			let intersection = geometry.intersection(ray);
 			if (intersection != null) {
@@ -65,7 +70,8 @@ export class ReflectionDriver {
 		}
 
 		//update color of the pixel grid at this pixel
-		let pixelColor=new Color(0,0,0,0);
+		let pixelColor=new Color(0,0,255,255);
+		
 		if (best != null) {
 
 			//find the reflected ray by computing the reflected vector at intersection point
@@ -80,17 +86,14 @@ export class ReflectionDriver {
 			//for subsequent rays, fire off another ray in the reflected direction(called reflectd ray)
 			if(depth<ReflectionDriver.MAX_DEPTH){
 
-
 				//get the pixel color from the reflection and apply that proportional to reflection coefficient,
 				let reflectionCoefficient=(best.geometry.illuminationModel as PhongIlluminationModel).kr;
 				if(reflectionCoefficient>0){
 
-					let detailedPixel=this.illuminate(reflectedRay,world,depth+1);
-					pixelColor.addToSelf(detailedPixel).scalerProduct(reflectionCoefficient);
+					let detailedPixel=this.illuminate(reflectedRay,best.geometry,world,depth+1);
+					pixelColor.addToSelf(detailedPixel.scalerProduct(reflectionCoefficient));
 				}
 			}
-		}else{
-			pixelColor=new Color(0,0,255,255);
 		}
 		return pixelColor;
 	}
