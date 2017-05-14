@@ -9,6 +9,7 @@ import { BasicShadingComponent } from './basic-shading/basic-shading.component';
 import { ProceduralTexturingComponent } from './procedural-texturing/procedural-texturing.component';
 import { WebglTestingComponent } from './webgl-testing/webgl-testing.component';
 import { ReflectionComponent } from './reflection/reflection.component';
+import { TransmissionComponent } from './transmission/transmission.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ReflectionComponent } from './reflection/reflection.component';
     BasicShadingComponent,
     ProceduralTexturingComponent,
     WebglTestingComponent,
-    ReflectionComponent
+    ReflectionComponent,
+    TransmissionComponent
   ],
   imports: [
     BrowserModule,
