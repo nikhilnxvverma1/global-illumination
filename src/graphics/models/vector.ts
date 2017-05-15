@@ -70,6 +70,10 @@ export class Vector{
 		return this;
 	}
 
+	add(that: Vector): Vector {
+		return new Vector(this.x + that.x, this.y + that.y, this.z + that.z);
+	}
+
 	subtract(that:Vector):Vector{
 		return new Vector(this.x-that.x,this.y-that.y,this.z-that.z);
 	}

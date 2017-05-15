@@ -39,9 +39,9 @@ export class TransmissionComponent implements OnInit {
 		camera.bottom=-10;
 
 		//upper blue sphere
-		let sphere1=new Sphere(12);
+		let sphere1=new Sphere(8);
 		// sphere1.position=new Point(5,10,-35);
-		sphere1.position=new Point(17,5,-25);
+		sphere1.position=new Point(5,3,-15);
 		sphere1.color=new Color().set("#009898");
 		let pi1=sphere1.illuminationModel as PhongIlluminationModel;
 		pi1.kt=0.8;

@@ -84,12 +84,14 @@ export class TransmissionDriver {
 			//for subsequent rays, fire off another ray in the reflected direction(called reflectd ray)
 			if(depth<TransmissionDriver.MAX_DEPTH){
 
+				//find the refracted ray here, there is a chance it might get used in the transmitted condition too(coz of Total internal reflection)
+				let reflectedVector=intersectionPoint.reflect(ray.direction,normal).normalize();//we inverte it again to get the right direction
+				let reflectedRay=new Ray(best.intersectionPoint,reflectedVector);
+
 				//get the pixel color from the reflection and apply that proportional to reflection coefficient,
 				let reflectionCoefficient=(best.geometry.illuminationModel as PhongIlluminationModel).kr;
 				if(reflectionCoefficient>0){
 
-					let reflectedVector=intersectionPoint.reflect(ray.direction,normal).normalize();//we inverte it again to get the right direction
-					let reflectedRay=new Ray(best.intersectionPoint,reflectedVector);
 					let detailedPixel=this.illuminate(reflectedRay,best.geometry,world,depth+1);
 					pixelColor.addToSelf(detailedPixel.scalerProduct(reflectionCoefficient));
 				}
@@ -99,8 +101,13 @@ export class TransmissionDriver {
 				if(transmissionCoefficient>0){
 
 					//find the refracted ray using Snells law
-					let refractedRay=best.geometry.refract(best.intersectionPoint,ray,normal);
-					let detailedPixel=this.illuminate(refractedRay,best.geometry,world,depth+1);
+					let refraction=best.geometry.refract(best.intersectionPoint,ray,normal);
+					let detailedPixel;
+					if(refraction.totalInternalReflection){
+						detailedPixel=this.illuminate(reflectedRay,best.geometry,world,depth+1);
+					}else{
+						detailedPixel=this.illuminate(refraction.refracted,best.geometry,world,depth+1);
+					}
 					pixelColor.addToSelf(detailedPixel.scalerProduct(transmissionCoefficient));
 				}
 
