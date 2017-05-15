@@ -19,6 +19,8 @@ export class PhongIlluminationModel implements IlluminationModel{
 	ke:number;
 	/** Reflectionm coefficient that determines color coming from other surfaces */
 	kr:number;
+	/** Transmission coefficient that determines color coming from refracted ray */
+	kt:number;
 
 	constructor(ka:number=0.9,kd:number=0.3,ks:number=0.6,ke:number=2){
 		this.ka=ka;

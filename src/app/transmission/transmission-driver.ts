@@ -77,8 +77,6 @@ export class TransmissionDriver {
 			//find the reflected ray by computing the reflected vector at intersection point
 			let intersectionPoint=best.intersectionPoint;
 			let normal= best.geometry.normalExtrudingTo(best.intersectionPoint).normalize();
-			let reflectedVector=intersectionPoint.reflect(ray.direction,normal).normalize();//we inverte it again to get the right direction
-			let reflectedRay=new Ray(best.intersectionPoint,reflectedVector);
 			
 			//for this pass, find the pixel color by calling the attached illumination model
 			pixelColor=best.geometry.illuminationModel.illuminate(best.intersectionPoint,best.geometry,world);
@@ -90,9 +88,23 @@ export class TransmissionDriver {
 				let reflectionCoefficient=(best.geometry.illuminationModel as PhongIlluminationModel).kr;
 				if(reflectionCoefficient>0){
 
+					let reflectedVector=intersectionPoint.reflect(ray.direction,normal).normalize();//we inverte it again to get the right direction
+					let reflectedRay=new Ray(best.intersectionPoint,reflectedVector);
 					let detailedPixel=this.illuminate(reflectedRay,best.geometry,world,depth+1);
 					pixelColor.addToSelf(detailedPixel.scalerProduct(reflectionCoefficient));
 				}
+
+				//get the pixel color from refraction and apply that proportional to refraction coefficient,
+				let transmissionCoefficient=(best.geometry.illuminationModel as PhongIlluminationModel).kt;
+				if(transmissionCoefficient>0){
+
+					//find the refracted ray using Snells law
+					let refractedRay=best.geometry.refract(best.intersectionPoint,ray,normal);
+					let detailedPixel=this.illuminate(refractedRay,best.geometry,world,depth+1);
+					pixelColor.addToSelf(detailedPixel.scalerProduct(transmissionCoefficient));
+				}
+
+
 			}
 		}
 		return pixelColor;

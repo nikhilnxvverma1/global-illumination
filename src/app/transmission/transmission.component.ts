@@ -43,6 +43,9 @@ export class TransmissionComponent implements OnInit {
 		// sphere1.position=new Point(5,10,-35);
 		sphere1.position=new Point(17,5,-25);
 		sphere1.color=new Color().set("#009898");
+		let pi1=sphere1.illuminationModel as PhongIlluminationModel;
+		pi1.kt=0.8;
+		sphere1.indexOfRefraction=0.95;
 
 		//lower green sphere 
 		let sphere2=new Sphere(10);
@@ -51,6 +54,8 @@ export class TransmissionComponent implements OnInit {
 		sphere2.color=new Color().set("#245214");
 		let pi=sphere2.illuminationModel as PhongIlluminationModel;
 		pi.kr=1.0;
+		pi.kt=0;
+		sphere2.indexOfRefraction=0.0;//irrelevant because it doesn't transmit rays
 
 		//bottom dark blue plane
 		let plane=new RectQuad();

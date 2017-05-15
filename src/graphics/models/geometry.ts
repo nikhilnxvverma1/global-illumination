@@ -15,11 +15,18 @@ export abstract class Geometry{
 	color:Color;
 	illuminationModel:IlluminationModel=new PhongIlluminationModel();
 	colorPickingStrategy:ColorPickingStrategy=new SimpleColorStrategy(this);
+	indexOfRefraction:number;
 
 	abstract intersection(ray:Ray):Point;
 
 	abstract normalExtrudingTo(point:Point):Vector;
 
 	abstract pointOnModelAfterIntersectionWith(ray:Ray):PointOnModel;
+
+	refract(point:Point,incoming:Ray,normal:Vector):Ray{
+		let refractedRay=new Ray(point,null);
+		refractedRay.indexOfRefraction=this.indexOfRefraction;
+		return refractedRay;
+	}
 
 }
