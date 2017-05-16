@@ -49,6 +49,9 @@ export class TransmissionDriver {
 
 		//find the best intersection:
 		let best: IntersectionResult = null;
+
+		//used exclusively to hold an intersection if it is with itself
+		// let selfCross:IntersectionResult=null;
 		for (let geometry of geometryList) {
 
 			//skip over the originating object
@@ -59,7 +62,6 @@ export class TransmissionDriver {
 			//compute intersections with ray
 			let intersection = geometry.intersection(ray);
 			if (intersection != null) {
-				
 				if(best!=null){
 					//update if closest to point to be closed to
 					best.updateIfNeeded(geometry,intersection)
@@ -72,7 +74,7 @@ export class TransmissionDriver {
 		//update color of the pixel grid at this pixel
 		let pixelColor=new Color(0,0,255,255);
 		
-		if (best != null) {
+		if (best != null ) {
 
 			//find the reflected ray by computing the reflected vector at intersection point
 			let intersectionPoint=best.intersectionPoint;
@@ -101,20 +103,67 @@ export class TransmissionDriver {
 				if(transmissionCoefficient>0){
 
 					//find the refracted ray using Snells law
-					let refraction=best.geometry.refract(best.intersectionPoint,ray,normal);
+					let surface:IntersectionResult=best;
+					let enteringIndex:number;
+					let enteringMedium:boolean;
+					if(ray.insideMedium){
+						enteringIndex=1;//air
+						enteringMedium=false;
+					}else{
+						enteringIndex=surface.geometry.indexOfRefraction;
+						enteringMedium=true;
+					}
+					let refraction=this.refract(surface.intersectionPoint,enteringIndex,ray,normal,enteringMedium);
 					let detailedPixel;
 					if(refraction.totalInternalReflection){
-						detailedPixel=this.illuminate(reflectedRay,best.geometry,world,depth+1);
+						detailedPixel=this.illuminate(reflectedRay,surface.geometry,world,depth+1);
 					}else{
-						detailedPixel=this.illuminate(refraction.refracted,best.geometry,world,depth+1);
+						detailedPixel=this.illuminate(refraction.refracted,surface.geometry,world,depth+1);
 					}
 					pixelColor.addToSelf(detailedPixel.scalerProduct(transmissionCoefficient));
-				}
-
-
+				} 
 			}
 		}
 		return pixelColor;
+	}
+
+	refract(point: Point,indexOfRefractionOfMedium:number, incident: Ray, normal: Vector,enteringMedium:boolean): RefractionResult {
+		//store all return related values here
+		let refractedResult = new RefractionResult();
+		refractedResult.incident = incident;
+		refractedResult.intersection = point;
+		refractedResult.normal = normal;
+
+		//find the result to the equation
+		let d = incident.direction;//D
+		let cosTi = -d.dot(normal);//-D.N
+		let n = incident.indexOfRefraction / indexOfRefractionOfMedium;//nit=ni/nt
+		let descriminant = 1 + (n * n * ((cosTi * cosTi) - 1));// 1 + (n^2 ((-D.N)^2-1))
+
+		//total internal reflection condition
+		if (descriminant < 0) {
+			//use reflected ray for both calculations
+			refractedResult.totalInternalReflection = true;
+		} else {
+			refractedResult.totalInternalReflection = false;
+			//find the refracted(or transmitted) ray
+
+			//first term
+			let nd = d.scalerProduct(n);
+
+			//second term of equation
+			let bracket=(n*cosTi - Math.sqrt(descriminant));
+			let bracketN=normal.scalerProduct(bracket);
+
+			//transmitted vector
+			let t=nd.add(bracketN);
+
+			refractedResult.refracted=new Ray(point,t.normalize());
+			refractedResult.refracted.indexOfRefraction = indexOfRefractionOfMedium;
+			refractedResult.refracted.insideMedium = enteringMedium;
+		}
+
+		return refractedResult;
 	}
 }
 
@@ -141,4 +190,12 @@ class IntersectionResult {
 		}
 		return false;
 	}
+}
+
+export class RefractionResult{
+	refracted:Ray;
+	totalInternalReflection:boolean;
+	intersection:Point;
+	incident:Ray;
+	normal:Vector;
 }

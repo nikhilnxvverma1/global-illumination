@@ -6,6 +6,7 @@ export class Ray{
 	direction:Vector;
 	//holds index of refraction for the medium it is in
 	indexOfRefraction=1;//default is 1 for air
+	insideMedium=false;
 
 	constructor(origin:Point,direction:Vector){
 		this.origin=origin;
