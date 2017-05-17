@@ -10,6 +10,7 @@ import { ProceduralTexturingComponent } from './procedural-texturing/procedural-
 import { WebglTestingComponent } from './webgl-testing/webgl-testing.component';
 import { ReflectionComponent } from './reflection/reflection.component';
 import { TransmissionComponent } from './transmission/transmission.component';
+import { ToneReproductionComponent } from './tone-reproduction/tone-reproduction.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { TransmissionComponent } from './transmission/transmission.component';
     ProceduralTexturingComponent,
     WebglTestingComponent,
     ReflectionComponent,
-    TransmissionComponent
+    TransmissionComponent,
+    ToneReproductionComponent
   ],
   imports: [
     BrowserModule,
