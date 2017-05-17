@@ -97,10 +97,10 @@ export class ToneReproductionComponent implements OnInit {
 		// USE driver TO GET pixel grid
 		let pixelGrid=new TransmissionDriver(500,500).computePixelGrid(world);
 		//tone reproduction step
-		let ldMax=10;
-		// let operator=new WardPerpetualOperator(ldMax);
-		let operator=new ReinhardPhotographicOperator(ldMax);
-		let afterToneReproduction=this.toneReproduction(pixelGrid,ldMax,operator);
+		let ldMax=1000;
+		let ward=new WardPerpetualOperator(ldMax);
+		let reinhard=new ReinhardPhotographicOperator(ldMax);
+		let afterToneReproduction=this.toneReproduction(pixelGrid,ldMax,reinhard);
 		
 		pixelGridRenderer.pixelGrid=afterToneReproduction;
 

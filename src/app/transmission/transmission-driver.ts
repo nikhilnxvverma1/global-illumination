@@ -36,7 +36,8 @@ export class TransmissionDriver {
 				//make the ray from camera to pixel
 				let pixel = imagePlane.pointInGrid(i, j, this.width, this.height);
 				let ray = new Ray(camera.origin, Vector.between(camera.origin,pixel));
-				pixelGrid.grid[j][i] = this.illuminate(ray,null,world,0);
+				let pixelColor = this.illuminate(ray,null,world,0);
+				pixelGrid.grid[j][i] = pixelColor.truncateFractionalPart();
 			}
 		}
 		return pixelGrid;
