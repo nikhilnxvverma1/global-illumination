@@ -13,6 +13,7 @@ import { TransmissionDriver } from '../transmission/transmission-driver';
 import { ToneReproductionDriver } from './tone-reproduction-driver';
 import { ToneReproductionOperator } from '../../graphics/tone-reproduction-operator';
 import { WardPerpetualOperator } from '../../graphics/ward-perpetual-operator';
+import { ReinhardPhotographicOperator } from '../../graphics/reinhard-photographic-operator';
 import { World } from '../../graphics/models/world';
 import { Light } from '../../graphics/models/light';
 import { CheckerBoxStrategy } from '../../graphics/color-picking-strategy';
@@ -97,7 +98,8 @@ export class ToneReproductionComponent implements OnInit {
 		let pixelGrid=new TransmissionDriver(500,500).computePixelGrid(world);
 		//tone reproduction step
 		let ldMax=10;
-		let operator=new WardPerpetualOperator(ldMax);
+		// let operator=new WardPerpetualOperator(ldMax);
+		let operator=new ReinhardPhotographicOperator(ldMax);
 		let afterToneReproduction=this.toneReproduction(pixelGrid,ldMax,operator);
 		
 		pixelGridRenderer.pixelGrid=afterToneReproduction;

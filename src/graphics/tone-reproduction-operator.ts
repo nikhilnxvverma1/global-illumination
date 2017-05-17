@@ -8,7 +8,7 @@ export abstract class ToneReproductionOperator{
 		let lBar = 0;
 		let n = luminanceOnly.rows * luminanceOnly.columns;
 		let sum = 0;
-		let sigma = 0.0001;//small value to prevent it from going to infinity 
+		let sigma = 0.0000001;//small value to prevent it from going to infinity 
 		for (let i = 0; i < luminanceOnly.rows; i++) {
 			for (let j = 0; j < luminanceOnly.columns; j++) {
 
