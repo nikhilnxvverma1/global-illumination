@@ -1,23 +1,26 @@
 import { PixelGrid } from './models/pixel-grid';
 import { Color } from './models/color';
 
-export interface ToneReproductionOperator{
-	apply(pixelGrid:PixelGrid,luminanceOnly:PixelGrid):PixelGrid;
-}
+export abstract class ToneReproductionOperator{
+	abstract apply(pixelGrid:PixelGrid,luminanceOnly:PixelGrid):PixelGrid;
 
-export class WardPerpetualOperator implements ToneReproductionOperator{
-	
-	ldMax:number;
+	logAverageLuminance(luminanceOnly: PixelGrid): number {
+		let lBar = 0;
+		let n = luminanceOnly.rows * luminanceOnly.columns;
+		let sum = 0;
+		let sigma = 0.0001;//small value to prevent it from going to infinity 
+		for (let i = 0; i < luminanceOnly.rows; i++) {
+			for (let j = 0; j < luminanceOnly.columns; j++) {
 
-	apply(pixelGrid:PixelGrid,luminanceOnly:PixelGrid):PixelGrid{
-		let scaledGrid=new PixelGrid(pixelGrid.columns,pixelGrid.rows,new Color(0,0,0,0));
+				//get RGB values at this pixel
+				let l = luminanceOnly.grid[i][j].r;
 
-		return scaledGrid;
-	}
+				let inner = (sigma + l);
+				let element = Math.log2(inner);
 
-	logAverageLuminance(pixelGrid:PixelGrid):number{
-		let lBar=0;
-
-		return 0;//TODO
+				sum += element;
+			}
+		}
+		return Math.exp(sum / n);
 	}
 }
