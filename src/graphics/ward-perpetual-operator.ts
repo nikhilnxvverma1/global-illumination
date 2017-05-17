@@ -6,6 +6,11 @@ export class WardPerpetualOperator extends ToneReproductionOperator{
 	
 	ldMax:number;
 
+	constructor(ldMax:number){
+		super();
+		this.ldMax=ldMax;
+	}
+
 	apply(pixelGrid:PixelGrid,luminanceOnly:PixelGrid):PixelGrid{
 
 		let lWa=this.logAverageLuminance(luminanceOnly);

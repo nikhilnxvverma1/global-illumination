@@ -42,6 +42,7 @@ export class Color {
 		return "#" + this.getHexPart(this.r) + this.getHexPart(this.g) + this.getHexPart(this.b);
 	}
 
+	/** Returns a clone with whole values ranging from 0 - 1 */
 	toFractionalValues(): Color {
 		let clone = new Color();
 		clone.r = this.r / 255;
@@ -51,6 +52,7 @@ export class Color {
 		return clone;
 	}
 
+	/** Returns a clone with whole values ranging from 0 - 255 */
 	toWholeValues(): Color {
 		let clone = new Color();
 		clone.r = Math.min(255,Math.ceil(this.r * 255));
@@ -60,6 +62,7 @@ export class Color {
 		return clone;
 	}
 
+	/** Returns a clone thats a product of this color with another color*/
 	product(that: Color): Color {
 		let product = new Color();
 		product.r = this.r * that.r;
@@ -69,7 +72,7 @@ export class Color {
 		return product;
 	}
 
-
+	/** Returns a clone with values scaled up by a scaler*/
 	scalerProduct(scaler: number): Color {
 		let color = new Color();
 		color.r = scaler * this.r;
@@ -79,7 +82,7 @@ export class Color {
 		return color;
 	}
 
-	/**Returns the sum of this color with another color */
+	/**Returns the sum of this color with another color as a clone */
 	sum(that:Color):Color{
 		return new Color(this.r+that.r,this.g+that.g,this.b+that.b,this.a+that.a);
 	}
@@ -126,6 +129,14 @@ export class Color {
 
 	isZero():boolean{
 		return (this.r ==0 && this.g ==0 && this.b ==0);
+	}
+
+	truncateFractionalPart():Color{
+		this.r=Math.min(255,Math.round(this.r));
+		this.g=Math.min(255,Math.round(this.g));
+		this.b=Math.min(255,Math.round(this.b));
+		this.a=Math.min(255,Math.round(this.a));
+		return this;
 	}
 
 }

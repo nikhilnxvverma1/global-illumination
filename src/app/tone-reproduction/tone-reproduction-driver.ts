@@ -5,6 +5,11 @@ export class ToneReproductionDriver{
 	operator:ToneReproductionOperator;
 	lMax:number;
 
+	constructor(operator:ToneReproductionOperator, lMax:number){
+		this.operator=operator;
+		this.lMax=lMax;
+	}
+
 	applyToneReproduction(pixelGrid:PixelGrid):PixelGrid{
 
 		//luminance values at each pixel
@@ -14,7 +19,8 @@ export class ToneReproductionDriver{
 		let afterOperator=this.operator.apply(pixelGrid,luminanceOnly);
 
 		// apply device model
-		return this.deviceModel(luminanceOnly,this.lMax);
+		let deviceSuitable = this.deviceModel(afterOperator, this.lMax);
+		return deviceSuitable;
 	}
 
 	private overallLuminance(pixelGrid: PixelGrid): PixelGrid {
@@ -57,6 +63,9 @@ export class ToneReproductionDriver{
 				finalColorGrid.grid[i][j].r = r/ldMax;
 				finalColorGrid.grid[i][j].g = g/ldMax;
 				finalColorGrid.grid[i][j].b = b/ldMax;
+
+				finalColorGrid.grid[i][j] = finalColorGrid.grid[i][j].toWholeValues().truncateFractionalPart();
+				
 			}
 		}
 

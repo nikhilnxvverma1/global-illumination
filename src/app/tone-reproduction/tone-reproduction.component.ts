@@ -10,6 +10,9 @@ import { Vector } from '../../graphics/models/vector';
 import { Geometry } from '../../graphics/models/geometry';
 import { RectQuad } from '../../graphics/models/rect-quad';
 import { TransmissionDriver } from '../transmission/transmission-driver';
+import { ToneReproductionDriver } from './tone-reproduction-driver';
+import { ToneReproductionOperator } from '../../graphics/tone-reproduction-operator';
+import { WardPerpetualOperator } from '../../graphics/ward-perpetual-operator';
 import { World } from '../../graphics/models/world';
 import { Light } from '../../graphics/models/light';
 import { CheckerBoxStrategy } from '../../graphics/color-picking-strategy';
@@ -91,11 +94,23 @@ export class ToneReproductionComponent implements OnInit {
 		let pixelGridRenderer=new PixelGridRenderer(canvas.getContext('2d'));
 		
 		// USE driver TO GET pixel grid
-		pixelGridRenderer.pixelGrid=new TransmissionDriver(500,500).computePixelGrid(world);
+		let pixelGrid=new TransmissionDriver(500,500).computePixelGrid(world);
+		//tone reproduction step
+		let ldMax=10;
+		let operator=new WardPerpetualOperator(ldMax);
+		let afterToneReproduction=this.toneReproduction(pixelGrid,ldMax,operator);
+		
+		pixelGridRenderer.pixelGrid=afterToneReproduction;
 
 		//draw
 		this.renderer=pixelGridRenderer;
 		this.renderer.draw();
+	}
+
+	toneReproduction(pixelGrid:PixelGrid,ldMax:number,operator:ToneReproductionOperator):PixelGrid{
+		
+		let trDriver=new ToneReproductionDriver(operator,ldMax);
+		return trDriver.applyToneReproduction(pixelGrid);
 	}
 
 }
